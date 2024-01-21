@@ -1,0 +1,30 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Torch and Touch"
+  sidebar:
+    style: "docked"
+    contents:
+      - text: "Introduction"
+        contents:
+          - DL01.ipynb
+          - DL02.ipynb
+      - text: "딥러닝 기초"
+        contents:
+          - DL03.ipynb
+          - DL04.ipynb
+  page-footer:
+    left: "Copyright 2023, Sangkon Han" 
+    right: 
+      - icon: github
+        href: https://github.com/sigmadream
+      - icon: youtube
+        href: https://www.youtube.com/@sangkonhan
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true

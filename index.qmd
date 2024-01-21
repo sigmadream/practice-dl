@@ -1,0 +1,7 @@
+---
+title: "PNU 2024, 통계학과 딥러닝 특강"
+---
+
+## Ref.
+
+- [강의노트](https://docs.google.com/presentation/d/1ATnf8pThlAE1qPKG3QyYzNsoxRuohomOznWsZfZLNWk/edit#slide=id.p1)
