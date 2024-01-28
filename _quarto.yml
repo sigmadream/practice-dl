@@ -1,30 +1,39 @@
 project:
-  type: website
+  type: book
   output-dir: docs
 
-website:
-  title: "Torch and Touch"
-  sidebar:
-    style: "docked"
-    contents:
-      - text: "Introduction"
-        contents:
-          - DL01.ipynb
-          - DL02.ipynb
-      - text: "딥러닝 기초"
-        contents:
-          - DL03.ipynb
-          - DL04.ipynb
-  page-footer:
-    left: "Copyright 2023, Sangkon Han" 
-    right: 
-      - icon: github
-        href: https://github.com/sigmadream
-      - icon: youtube
-        href: https://www.youtube.com/@sangkonhan
+book:
+  title: "머신러닝/딥러닝 입문"
+  author: "한상곤(sangkon@pusan.ac.kr)"
+  date: "1/29/2024"
+  chapters:
+    - index.qmd
+    - DL01.ipynb
+    - DL02.ipynb
+    - DL03.ipynb
+    - DL04.ipynb
+    - DL05.ipynb
+    - DL06.ipynb
+    - DL07.ipynb
+    - DL08.ipynb
+    - DL09.ipynb            
+    - DL00_Python.ipynb
+    - DL00_Torch.ipynb
+    - references.qmd
+
+bibliography: references.bib
 
 format:
   html:
     theme: cosmo
-    css: styles.css
-    toc: true
+  # pdf:
+  #   documentclass: scrreprt
+  #   papersize: a4
+  #   toc: true
+  #   toc-depth: 2
+  #   number-sections: true
+  #   colorlinks: true
+  #   include-in-header: 
+  #     text: |
+  #       \usepackage{kotex} 
+  #       \usepackage{pdfpages}

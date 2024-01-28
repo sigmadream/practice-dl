@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.549">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Torch and Touch - Day3. 머신러닝과 딥러닝</title>
+<title>머신러닝/딥러닝 입문 - 4&nbsp; Day3. 머신러닝과 딥러닝 실습(Hands-On)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -22,7 +22,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -64,6 +64,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<link href="./DL04.html" rel="next">
+<link href="./DL02.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -79,7 +81,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -88,31 +96,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
 }</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
-<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
-<link rel="stylesheet" href="styles.css">
 </head>
 
-<body class="nav-sidebar docked">
+<body class="nav-sidebar floating">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./DL03.html">딥러닝 기초</a></li><li class="breadcrumb-item"><a href="./DL03.html">Day3. 머신러닝과 딥러닝</a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./DL03.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Day3. 머신러닝과 딥러닝 실습(Hands-On)</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
@@ -122,10 +127,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">Torch and Touch</a> 
+      <a href="./">머신러닝/딥러닝 입문</a> 
     </div>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
@@ -135,73 +140,96 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#" aria-expanded="true">
- <span class="menu-text">Introduction</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">PNU 2024, 통계학과 딥러닝 특강</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./DL01.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Day1. 전처리</span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Day1. 전처리 실습(Hands-On)</span></span></a>
   </div>
 </li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./DL02.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Day2. 기울기와 절편, 그리고 회귀</span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Day2. 기울기와 절편, 그리고 회귀 실습(Hands-On)</span></span></a>
   </div>
 </li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#" aria-expanded="true">
- <span class="menu-text">딥러닝 기초</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./DL03.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Day3. 머신러닝과 딥러닝</span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Day3. 머신러닝과 딥러닝 실습(Hands-On)</span></span></a>
   </div>
 </li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./DL04.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Day4. CNN을 사용한 특징 기반 분류</span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Day4. CNN을 사용한 특징 기반 분류 v1.2 실습(Hands-On)</span></span></a>
   </div>
 </li>
-      </ul>
-  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Day5. VGG와 ResNet 학습하기 실습(Hands-On)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Day6. RNN 학습하기 실습(Hands-On)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Day7. LSTM 학습하기 실습(Hands-On)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Day8. 어텐션! 실습(Hands-On)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Day9. GAN 실습(Hands-On)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL00_Python.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">함수와 클래스</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL00_Torch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">벡터, 행렬 그리고 텐서(Vector, Matrix and Tensor)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
+    <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#퍼셉트론을-활용한-머신러닝" id="toc-퍼셉트론을-활용한-머신러닝" class="nav-link active" data-scroll-target="#퍼셉트론을-활용한-머신러닝">퍼셉트론을 활용한 머신러닝</a></li>
-  <li><a href="#딥러닝을-활용한-xor-문제-해결" id="toc-딥러닝을-활용한-xor-문제-해결" class="nav-link" data-scroll-target="#딥러닝을-활용한-xor-문제-해결">딥러닝을 활용한 XOR 문제 해결</a></li>
-  <li><a href="#sin-값-예측하기" id="toc-sin-값-예측하기" class="nav-link" data-scroll-target="#sin-값-예측하기">Sin 값 예측하기</a></li>
-  <li><a href="#using-pytorch" id="toc-using-pytorch" class="nav-link" data-scroll-target="#using-pytorch">Using PyTorch</a>
-  <ul class="collapse">
-  <li><a href="#loading-the-data-eda-and-data-preparation" id="toc-loading-the-data-eda-and-data-preparation" class="nav-link" data-scroll-target="#loading-the-data-eda-and-data-preparation">Loading the data, EDA and data preparation</a></li>
-  <li><a href="#architecture-of-the-neural-network" id="toc-architecture-of-the-neural-network" class="nav-link" data-scroll-target="#architecture-of-the-neural-network">Architecture of the Neural Network</a></li>
-  <li><a href="#defining-the-model" id="toc-defining-the-model" class="nav-link" data-scroll-target="#defining-the-model">Defining the Model</a></li>
-  <li><a href="#defining-the-training-loop" id="toc-defining-the-training-loop" class="nav-link" data-scroll-target="#defining-the-training-loop">Defining the training loop</a></li>
-  <li><a href="#plotting-the-learning-curve" id="toc-plotting-the-learning-curve" class="nav-link" data-scroll-target="#plotting-the-learning-curve">Plotting the learning curve</a></li>
-  </ul></li>
+  <li><a href="#딥러닝을-활용한-xor-문제-해결" id="toc-딥러닝을-활용한-xor-문제-해결" class="nav-link active" data-scroll-target="#딥러닝을-활용한-xor-문제-해결"><span class="header-section-number">4.1</span> 딥러닝을 활용한 XOR 문제 해결</a></li>
+  <li><a href="#sin-값-예측하기" id="toc-sin-값-예측하기" class="nav-link" data-scroll-target="#sin-값-예측하기"><span class="header-section-number">4.2</span> Sin 값 예측하기</a></li>
   </ul>
 </nav>
     </div>
@@ -210,7 +238,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Day3. 머신러닝과 딥러닝</h1>
+<h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Day3. 머신러닝과 딥러닝 실습(Hands-On)</span></h1>
 </div>
 
 
@@ -223,14 +251,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
+
 </header>
 
-<section id="퍼셉트론을-활용한-머신러닝" class="level2">
-<h2 class="anchored" data-anchor-id="퍼셉트론을-활용한-머신러닝">퍼셉트론을 활용한 머신러닝</h2>
-<div class="cell" data-execution_count="12">
+
+<ul>
+<li>퍼셉트론을 활용한 머신러닝
+<ul>
+<li>AND, OR, NAND를 활용해서 XOR 문제를 해결하는 방법을 실습합니다.</li>
+</ul></li>
+</ul>
+<div id="cell-2" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="13">
+<div id="cell-3" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> AND(x1, x2):</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.array([x1, x2]) <span class="co"># 입력</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    w <span class="op">=</span> np.array([<span class="fl">0.5</span>, <span class="fl">0.5</span>]) <span class="co"># 가중치</span></span>
@@ -241,7 +275,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="14">
+<div id="cell-4" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(AND(<span class="dv">0</span>,<span class="dv">0</span>))</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(AND(<span class="dv">0</span>,<span class="dv">1</span>))</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(AND(<span class="dv">1</span>,<span class="dv">0</span>))</span>
@@ -253,7 +287,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 1</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="15">
+<div id="cell-5" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> NAND(x1, x2):</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.array([x1, x2]) <span class="co"># 입력</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    w <span class="op">=</span> np.array([<span class="op">-</span><span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.5</span>]) <span class="co"># 가중치</span></span>
@@ -264,7 +298,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="16">
+<div id="cell-6" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(NAND(<span class="dv">0</span>,<span class="dv">0</span>))</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(NAND(<span class="dv">0</span>,<span class="dv">1</span>))</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(NAND(<span class="dv">1</span>,<span class="dv">0</span>))</span>
@@ -276,7 +310,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 0</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="17">
+<div id="cell-7" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> OR(x1, x2):</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.array([x1, x2]) <span class="co"># 입력</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    w <span class="op">=</span> np.array([<span class="fl">0.5</span>, <span class="fl">0.5</span>]) <span class="co"># 가중치</span></span>
@@ -287,7 +321,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
 <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="18">
+<div id="cell-8" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(OR(<span class="dv">0</span>,<span class="dv">0</span>))</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(OR(<span class="dv">0</span>,<span class="dv">1</span>))</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(OR(<span class="dv">1</span>,<span class="dv">0</span>))</span>
@@ -299,16 +333,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 1</code></pre>
 </div>
 </div>
-</section>
-<section id="딥러닝을-활용한-xor-문제-해결" class="level2">
-<h2 class="anchored" data-anchor-id="딥러닝을-활용한-xor-문제-해결">딥러닝을 활용한 XOR 문제 해결</h2>
-<div class="cell" data-execution_count="22">
+<section id="딥러닝을-활용한-xor-문제-해결" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="딥러닝을-활용한-xor-문제-해결"><span class="header-section-number">4.1</span> 딥러닝을 활용한 XOR 문제 해결</h2>
+<div id="cell-10" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> XOR(x1, x2):</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    s1 <span class="op">=</span> NAND(x1, x2)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    s2 <span class="op">=</span> OR(x1, x2)</span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> AND(s1, s2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="23">
+<div id="cell-11" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(XOR(<span class="dv">0</span>,<span class="dv">0</span>)) <span class="co"># 0</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(XOR(<span class="dv">0</span>,<span class="dv">1</span>)) <span class="co"># 1</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(XOR(<span class="dv">1</span>,<span class="dv">0</span>)) <span class="co"># 1</span></span>
@@ -321,9 +354,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="sin-값-예측하기" class="level2">
-<h2 class="anchored" data-anchor-id="sin-값-예측하기">Sin 값 예측하기</h2>
-<div class="cell" data-execution_count="24">
+<section id="sin-값-예측하기" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="sin-값-예측하기"><span class="header-section-number">4.2</span> Sin 값 예측하기</h2>
+<div id="cell-13" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -380,385 +413,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"y random"</span>)</span>
 <span id="cb14-55"><a href="#cb14-55" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="DL03_files/figure-html/cell-11-output-1.png" class="img-fluid"></p>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>epoch1 loss:1018073.25
-epoch101 loss:259.82220458984375
-epoch201 loss:211.42466735839844
-epoch301 loss:172.73411560058594
-epoch401 loss:141.27572631835938
-epoch501 loss:115.69705963134766
-epoch601 loss:94.89965057373047
-epoch701 loss:77.98924255371094
-epoch801 loss:64.23966979980469
-epoch901 loss:53.059940338134766
-epoch1001 loss:43.96979522705078
-epoch1101 loss:36.57878875732422
-epoch1201 loss:30.56935691833496
-epoch1301 loss:25.683107376098633
-epoch1401 loss:21.7100830078125
-epoch1501 loss:18.479732513427734
-epoch1601 loss:15.853113174438477
-epoch1701 loss:13.717451095581055
-epoch1801 loss:11.98098373413086
-epoch1901 loss:10.569087028503418</code></pre>
-</div>
-<div class="cell-output cell-output-display">
-<p><img src="DL03_files/figure-html/cell-11-output-3.png" class="img-fluid"></p>
-</div>
-</div>
-</section>
-<section id="using-pytorch" class="level2">
-<h2 class="anchored" data-anchor-id="using-pytorch">Using PyTorch</h2>
-<div class="cell" data-execution_count="25">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.optim <span class="im">as</span> optim</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> copy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<section id="loading-the-data-eda-and-data-preparation" class="level3">
-<h3 class="anchored" data-anchor-id="loading-the-data-eda-and-data-preparation">Loading the data, EDA and data preparation</h3>
-<div class="cell" data-execution_count="31">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"./data/housing.csv"</span>)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.dropna().reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>df.head(<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="31">
 <div>
-
-
-<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">longitude</th>
-<th data-quarto-table-cell-role="th">latitude</th>
-<th data-quarto-table-cell-role="th">housing_median_age</th>
-<th data-quarto-table-cell-role="th">total_rooms</th>
-<th data-quarto-table-cell-role="th">total_bedrooms</th>
-<th data-quarto-table-cell-role="th">population</th>
-<th data-quarto-table-cell-role="th">households</th>
-<th data-quarto-table-cell-role="th">median_income</th>
-<th data-quarto-table-cell-role="th">median_house_value</th>
-<th data-quarto-table-cell-role="th">ocean_proximity</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">0</td>
-<td>-122.23</td>
-<td>37.88</td>
-<td>41.0</td>
-<td>880.0</td>
-<td>129.0</td>
-<td>322.0</td>
-<td>126.0</td>
-<td>8.3252</td>
-<td>452600.0</td>
-<td>NEAR BAY</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">1</td>
-<td>-122.22</td>
-<td>37.86</td>
-<td>21.0</td>
-<td>7099.0</td>
-<td>1106.0</td>
-<td>2401.0</td>
-<td>1138.0</td>
-<td>8.3014</td>
-<td>358500.0</td>
-<td>NEAR BAY</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">2</td>
-<td>-122.24</td>
-<td>37.85</td>
-<td>52.0</td>
-<td>1467.0</td>
-<td>190.0</td>
-<td>496.0</td>
-<td>177.0</td>
-<td>7.2574</td>
-<td>352100.0</td>
-<td>NEAR BAY</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">3</td>
-<td>-122.25</td>
-<td>37.85</td>
-<td>52.0</td>
-<td>1274.0</td>
-<td>235.0</td>
-<td>558.0</td>
-<td>219.0</td>
-<td>5.6431</td>
-<td>341300.0</td>
-<td>NEAR BAY</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">4</td>
-<td>-122.25</td>
-<td>37.85</td>
-<td>52.0</td>
-<td>1627.0</td>
-<td>280.0</td>
-<td>565.0</td>
-<td>259.0</td>
-<td>3.8462</td>
-<td>342200.0</td>
-<td>NEAR BAY</td>
-</tr>
-</tbody>
-</table>
-
+<figure class="figure">
+<p><img src="DL03_files/figure-html/cell-11-output-1.png" class="img-fluid figure-img"></p>
+</figure>
 </div>
 </div>
-</div>
-<div class="cell" data-execution_count="32">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>xDf <span class="op">=</span> df[</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    [</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"longitude"</span>,</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>     <span class="st">"latitude"</span>,</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>     <span class="st">"housing_median_age"</span>,</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>     <span class="st">"total_rooms"</span>,</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>     <span class="st">"total_bedrooms"</span>,</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>     <span class="st">"population"</span>,</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>     <span class="st">"households"</span>,</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>     <span class="st">"median_income"</span></span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    ]</span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"median_house_value"</span>] <span class="op">=</span> df.<span class="bu">apply</span>(<span class="kw">lambda</span> row: <span class="bu">float</span>(row[<span class="st">"median_house_value"</span>] <span class="op">/</span> <span class="bu">float</span>(<span class="dv">100000</span>)), axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>yDf <span class="op">=</span> df[<span class="st">"median_house_value"</span>]</span>
-<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> xDf.values</span>
-<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> yDf.values</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell" data-execution_count="33">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y, train_size <span class="op">=</span> <span class="fl">0.7</span>, shuffle <span class="op">=</span> <span class="va">True</span>)</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>X_train <span class="op">=</span> torch.tensor(X_train, dtype<span class="op">=</span>torch.float32)</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>y_train <span class="op">=</span> torch.tensor(y_train, dtype<span class="op">=</span>torch.float32).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>X_test <span class="op">=</span> torch.tensor(X_test, dtype<span class="op">=</span>torch.float32)</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>y_test <span class="op">=</span> torch.tensor(y_test, dtype<span class="op">=</span>torch.float32).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="architecture-of-the-neural-network" class="level3">
-<h3 class="anchored" data-anchor-id="architecture-of-the-neural-network">Architecture of the Neural Network</h3>
-<p>이 연습에서는 신경망의 고전적인 구조인 피라미드 구조를 사용하겠습니다. 이 유형의 신경망에서 각 숨겨진 레이어는 다음 레이어에 연결되며 각 레이어는 이전 레이어보다 작습니다. 입력 계층의 크기는 특징의 수와 같으며, 이 경우 8입니다. 이 예제에서는 하나의 목표(연속적인 값인 집 가격)를 예측하려고 하므로 마지막 계층에 뉴런 하나만 있습니다.</p>
-<p>회귀 문제에서는 대상을 완벽하게 정확하게 예측할 수 없으므로 손실 함수로 MSE를 사용하는 것이 좋습니다.</p>
-</section>
-<section id="defining-the-model" class="level3">
-<h3 class="anchored" data-anchor-id="defining-the-model">Defining the Model</h3>
-<p>이제 PyTorch를 사용해 모델을 피라미드 구조의 선형 레이어 시퀀스로 정의하겠습니다. 입력 레이어에는 8개의 뉴런(이것이 우리가 가진 특징의 수)과 단 하나의 출력 뉴런(이것이 우리의 목표인 집값)이 있다는 점에 유의하세요.</p>
-<div class="cell" data-execution_count="34">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> nn.Sequential(</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    nn.Linear(<span class="dv">8</span>, <span class="dv">24</span>),</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    nn.ReLU(),</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    nn.Linear(<span class="dv">24</span>, <span class="dv">12</span>),</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    nn.ReLU(),</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    nn.Linear(<span class="dv">12</span>, <span class="dv">6</span>),</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    nn.ReLU(),</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    nn.Linear(<span class="dv">6</span>, <span class="dv">1</span>)</span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>As a loss function we will use MSE and for the optimizer we will use Adam</p>
-<div class="cell" data-execution_count="35">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>loss_function <span class="op">=</span> nn.MSELoss()</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> optim.Adam(model.parameters(), lr <span class="op">=</span> <span class="fl">0.001</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="defining-the-training-loop" class="level3">
-<h3 class="anchored" data-anchor-id="defining-the-training-loop">Defining the training loop</h3>
-<div class="cell" data-execution_count="36">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>epochs <span class="op">=</span> <span class="dv">400</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>batchSize <span class="op">=</span> <span class="dv">20</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>best_mse <span class="op">=</span> np.inf</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>best_weights <span class="op">=</span> <span class="va">None</span></span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> []</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>size <span class="op">=</span> X.shape[<span class="dv">0</span>]</span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> epoch <span class="kw">in</span> <span class="bu">range</span>(epochs):</span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>    model.train()</span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>    index <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> index <span class="op">*</span> batchSize <span class="op">&lt;=</span> size:</span>
-<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>        X_batch <span class="op">=</span> X_train[index:index <span class="op">+</span> batchSize]</span>
-<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>        y_batch <span class="op">=</span> y_train[index:index <span class="op">+</span> batchSize]</span>
-<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>        y_pred <span class="op">=</span> model(X_batch)</span>
-<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>        loss <span class="op">=</span> loss_function(y_pred, y_batch)</span>
-<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>        optimizer.zero_grad()</span>
-<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>        loss.backward()</span>
-<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>        optimizer.step()</span>
-<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a>        index <span class="op">+=</span> batchSize</span>
-<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a>    model.<span class="bu">eval</span>()</span>
-<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a>    y_pred <span class="op">=</span> model(X_test)</span>
-<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a>    mse <span class="op">=</span> loss_function(y_pred, y_test)</span>
-<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a>    mse <span class="op">=</span> <span class="bu">float</span>(mse)</span>
-<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a>    history.append(mse)</span>
-<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> mse <span class="op">&lt;</span> best_mse:</span>
-<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"best mse is </span><span class="sc">{</span>mse<span class="sc">}</span><span class="ss"> on epoch </span><span class="sc">{</span>epoch<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a>        best_mse <span class="op">=</span> mse</span>
-<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a>        best_weights <span class="op">=</span> copy.deepcopy(model.state_dict())</span>
-<span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a>model.load_state_dict(best_weights)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>best mse is 6.128345966339111 on epoch 0
-best mse is 4.747837066650391 on epoch 1
-best mse is 4.726436138153076 on epoch 2
-best mse is 4.378176212310791 on epoch 3
-best mse is 4.287140369415283 on epoch 5
-best mse is 4.082657337188721 on epoch 6
-best mse is 3.8813700675964355 on epoch 7
-best mse is 3.604973316192627 on epoch 8
-best mse is 2.6447768211364746 on epoch 9
-best mse is 2.5121638774871826 on epoch 10
-best mse is 1.7982743978500366 on epoch 11
-best mse is 1.647772192955017 on epoch 12
-best mse is 1.5655877590179443 on epoch 13
-best mse is 1.4794301986694336 on epoch 14
-best mse is 1.4520149230957031 on epoch 15
-best mse is 1.4172937870025635 on epoch 16
-best mse is 1.3881410360336304 on epoch 17
-best mse is 1.3622167110443115 on epoch 18
-best mse is 1.2826541662216187 on epoch 19
-best mse is 1.2210208177566528 on epoch 20
-best mse is 1.1112759113311768 on epoch 21
-best mse is 1.1039745807647705 on epoch 22
-best mse is 1.0982367992401123 on epoch 23
-best mse is 1.0963279008865356 on epoch 24
-best mse is 1.089799404144287 on epoch 25
-best mse is 1.0830093622207642 on epoch 30
-best mse is 1.0713061094284058 on epoch 31
-best mse is 1.0708402395248413 on epoch 32
-best mse is 1.068825125694275 on epoch 33
-best mse is 1.05531907081604 on epoch 34
-best mse is 1.0497716665267944 on epoch 35
-best mse is 1.0382816791534424 on epoch 36
-best mse is 1.0312730073928833 on epoch 37
-best mse is 1.0244638919830322 on epoch 38
-best mse is 1.019054889678955 on epoch 39
-best mse is 1.0077873468399048 on epoch 41
-best mse is 1.007314920425415 on epoch 42
-best mse is 0.9989040493965149 on epoch 43
-best mse is 0.9963122606277466 on epoch 44
-best mse is 0.9906237125396729 on epoch 46
-best mse is 0.9681081175804138 on epoch 47
-best mse is 0.9679588675498962 on epoch 48
-best mse is 0.9636338949203491 on epoch 49
-best mse is 0.9365105628967285 on epoch 51
-best mse is 0.9349256753921509 on epoch 59
-best mse is 0.9318903684616089 on epoch 60
-best mse is 0.9142102003097534 on epoch 63
-best mse is 0.9138439297676086 on epoch 65
-best mse is 0.9086882472038269 on epoch 66
-best mse is 0.9014654755592346 on epoch 67
-best mse is 0.8996442556381226 on epoch 68
-best mse is 0.8988744616508484 on epoch 72
-best mse is 0.8975339531898499 on epoch 73
-best mse is 0.8964466452598572 on epoch 74
-best mse is 0.8934708833694458 on epoch 75
-best mse is 0.8881350755691528 on epoch 77
-best mse is 0.8869858980178833 on epoch 79
-best mse is 0.8848766088485718 on epoch 80
-best mse is 0.8816877603530884 on epoch 81
-best mse is 0.8811050057411194 on epoch 83
-best mse is 0.8774977326393127 on epoch 85
-best mse is 0.8737624883651733 on epoch 86
-best mse is 0.8732728362083435 on epoch 88
-best mse is 0.8731635808944702 on epoch 93
-best mse is 0.8614754676818848 on epoch 98
-best mse is 0.8488722443580627 on epoch 159
-best mse is 0.8383627533912659 on epoch 160
-best mse is 0.8242272138595581 on epoch 161
-best mse is 0.8041302561759949 on epoch 162
-best mse is 0.799055278301239 on epoch 166
-best mse is 0.7923058867454529 on epoch 168
-best mse is 0.7869041562080383 on epoch 170
-best mse is 0.7707822918891907 on epoch 171
-best mse is 0.7557774186134338 on epoch 172
-best mse is 0.7529003024101257 on epoch 174
-best mse is 0.7306028008460999 on epoch 176
-best mse is 0.7285521626472473 on epoch 177
-best mse is 0.7085898518562317 on epoch 180
-best mse is 0.7069340944290161 on epoch 183
-best mse is 0.6941869854927063 on epoch 184
-best mse is 0.6871175169944763 on epoch 187
-best mse is 0.6768085360527039 on epoch 188
-best mse is 0.674870491027832 on epoch 192
-best mse is 0.6707104444503784 on epoch 193
-best mse is 0.6658936142921448 on epoch 196
-best mse is 0.6569523811340332 on epoch 198
-best mse is 0.6482753753662109 on epoch 199
-best mse is 0.6455034017562866 on epoch 203
-best mse is 0.637505292892456 on epoch 205
-best mse is 0.6342315077781677 on epoch 206
-best mse is 0.6324762105941772 on epoch 207
-best mse is 0.6312294602394104 on epoch 208
-best mse is 0.6305112838745117 on epoch 209
-best mse is 0.6167631149291992 on epoch 212
-best mse is 0.6097006797790527 on epoch 216
-best mse is 0.6043913960456848 on epoch 217
-best mse is 0.6026005148887634 on epoch 218
-best mse is 0.5929579734802246 on epoch 219
-best mse is 0.589219331741333 on epoch 221
-best mse is 0.5780711770057678 on epoch 224
-best mse is 0.5773553848266602 on epoch 226
-best mse is 0.5717324018478394 on epoch 227
-best mse is 0.5657535791397095 on epoch 230
-best mse is 0.5491172075271606 on epoch 236
-best mse is 0.5466038584709167 on epoch 238
-best mse is 0.5438665151596069 on epoch 239
-best mse is 0.5391550064086914 on epoch 243
-best mse is 0.5359430313110352 on epoch 251
-best mse is 0.5355218648910522 on epoch 268</code></pre>
-</div>
-<div class="cell-output cell-output-display" data-execution_count="36">
-<pre><code>&lt;All keys matched successfully&gt;</code></pre>
-</div>
-</div>
-<div class="cell" data-execution_count="37">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"MSE: </span><span class="sc">%.4f</span><span class="st">"</span> <span class="op">%</span> best_mse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>MSE: 0.5355</code></pre>
-</div>
-</div>
-<p>MSE의 경우, 값이 100000으로 나뉘어져 있으므로 실제 가치는 약 50000 달러이다.</p>
-</section>
-<section id="plotting-the-learning-curve" class="level3">
-<h3 class="anchored" data-anchor-id="plotting-the-learning-curve">Plotting the learning curve</h3>
-<div class="cell" data-execution_count="38">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>plt.plot(history)</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"MSE evolution by Epoch"</span>)</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"MSE"</span>)</span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Epoch"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="38">
-<pre><code>Text(0, 0.5, 'Epoch')</code></pre>
+<pre><code>epoch1 loss:25594.9765625
+epoch101 loss:1265.33349609375
+epoch201 loss:1059.7664794921875
+epoch301 loss:892.087646484375
+epoch401 loss:751.0570678710938
+epoch501 loss:632.4374389648438
+epoch601 loss:532.6666870117188
+epoch701 loss:448.74884033203125
+epoch801 loss:378.1644287109375
+epoch901 loss:318.7945556640625
+epoch1001 loss:268.857177734375
+epoch1101 loss:226.853515625
+epoch1201 loss:191.5229949951172
+epoch1301 loss:161.80514526367188
+epoch1401 loss:136.8082275390625
+epoch1501 loss:115.7820816040039
+epoch1601 loss:98.09590911865234
+epoch1701 loss:83.21913146972656
+epoch1801 loss:70.70536041259766
+epoch1901 loss:60.17919921875</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="DL03_files/figure-html/cell-20-output-2.png" class="img-fluid"></p>
+<div>
+<figure class="figure">
+<p><img src="DL03_files/figure-html/cell-11-output-3.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -841,10 +533,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -854,8 +545,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -868,6 +568,125 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -911,6 +730,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -936,6 +756,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -995,31 +841,20 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
-</div> <!-- /content -->
-<footer class="footer">
-  <div class="nav-footer">
-    <div class="nav-footer-left">Copyright 2023, Sangkon Han</div>   
-    <div class="nav-footer-center">
-      &nbsp;
-    </div>
-    <div class="nav-footer-right">
-      <ul class="footer-items list-unstyled">
-    <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/sigmadream">
-      <i class="bi bi-github" role="img">
-</i> 
-    </a>
-  </li>  
-    <li class="nav-item compact">
-    <a class="nav-link" href="https://www.youtube.com/@sangkonhan">
-      <i class="bi bi-youtube" role="img">
-</i> 
-    </a>
-  </li>  
-</ul>
-    </div>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./DL02.html" class="pagination-link  aria-label=" &lt;span="" 기울기와="" 절편,="" 그리고="" 회귀="" 실습(hands-on)&lt;="" span&gt;"="">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Day2. 기울기와 절편, 그리고 회귀 실습(Hands-On)</span></span>
+      </a>          
   </div>
-</footer>
+  <div class="nav-page nav-page-next">
+      <a href="./DL04.html" class="pagination-link" aria-label="<span class='chapter-number'>5</span>&nbsp; <span class='chapter-title'>Day4. CNN을 사용한 특징 기반 분류 v1.2 실습(Hands-On)</span>">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Day4. CNN을 사용한 특징 기반 분류 v1.2 실습(Hands-On)</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
 
 
 

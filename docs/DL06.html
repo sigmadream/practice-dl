@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.549">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>머신러닝/딥러닝 입문 - 7&nbsp; Day6. RNN 학습하기 실습(Hands-On)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./DL07.html" rel="next">
+<link href="./DL05.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./DL06.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Day6. RNN 학습하기 실습(Hands-On)</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">머신러닝/딥러닝 입문</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">PNU 2024, 통계학과 딥러닝 특강</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Day1. 전처리 실습(Hands-On)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Day2. 기울기와 절편, 그리고 회귀 실습(Hands-On)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Day3. 머신러닝과 딥러닝 실습(Hands-On)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Day4. CNN을 사용한 특징 기반 분류 v1.2 실습(Hands-On)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Day5. VGG와 ResNet 학습하기 실습(Hands-On)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL06.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Day6. RNN 학습하기 실습(Hands-On)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Day7. LSTM 학습하기 실습(Hands-On)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Day8. 어텐션! 실습(Hands-On)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Day9. GAN 실습(Hands-On)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL00_Python.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">함수와 클래스</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL00_Torch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">벡터, 행렬 그리고 텐서(Vector, Matrix and Tensor)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#데이터-확인" id="toc-데이터-확인" class="nav-link active" data-scroll-target="#데이터-확인"><span class="header-section-number">7.1</span> 데이터 확인</a></li>
+  <li><a href="#데이터셋-전체-확인" id="toc-데이터셋-전체-확인" class="nav-link" data-scroll-target="#데이터셋-전체-확인"><span class="header-section-number">7.2</span> 데이터셋 전체 확인</a></li>
+  <li><a href="#데이터의-분포-확인" id="toc-데이터의-분포-확인" class="nav-link" data-scroll-target="#데이터의-분포-확인"><span class="header-section-number">7.3</span> 데이터의 분포 확인</a></li>
+  <li><a href="#넷플릭스-데이터셋-정의" id="toc-넷플릭스-데이터셋-정의" class="nav-link" data-scroll-target="#넷플릭스-데이터셋-정의"><span class="header-section-number">7.4</span> 넷플릭스 데이터셋 정의</a></li>
+  <li><a href="#rnn-클래스-정의하기" id="toc-rnn-클래스-정의하기" class="nav-link" data-scroll-target="#rnn-클래스-정의하기"><span class="header-section-number">7.5</span> RNN 클래스 정의하기</a></li>
+  <li><a href="#모델과-데이터셋-정의" id="toc-모델과-데이터셋-정의" class="nav-link" data-scroll-target="#모델과-데이터셋-정의"><span class="header-section-number">7.6</span> 모델과 데이터셋 정의</a></li>
+  <li><a href="#최적화-정의" id="toc-최적화-정의" class="nav-link" data-scroll-target="#최적화-정의"><span class="header-section-number">7.7</span> 최적화 정의</a></li>
+  <li><a href="#학습-루프-정의" id="toc-학습-루프-정의" class="nav-link" data-scroll-target="#학습-루프-정의"><span class="header-section-number">7.8</span> 학습 루프 정의</a></li>
+  <li><a href="#모델-성능-평가하기" id="toc-모델-성능-평가하기" class="nav-link" data-scroll-target="#모델-성능-평가하기"><span class="header-section-number">7.9</span> 모델 성능 평가하기</a></li>
+  <li><a href="#그림으로-확인하기" id="toc-그림으로-확인하기" class="nav-link" data-scroll-target="#그림으로-확인하기"><span class="header-section-number">7.10</span> 그림으로 확인하기</a></li>
+  <li><a href="#캘리포니아-집-값-예측" id="toc-캘리포니아-집-값-예측" class="nav-link" data-scroll-target="#캘리포니아-집-값-예측"><span class="header-section-number">7.11</span> 캘리포니아 집 값 예측</a>
+  <ul class="collapse">
+  <li><a href="#loading-the-data-eda-and-data-preparation" id="toc-loading-the-data-eda-and-data-preparation" class="nav-link" data-scroll-target="#loading-the-data-eda-and-data-preparation"><span class="header-section-number">7.11.1</span> Loading the data, EDA and data preparation</a></li>
+  </ul></li>
+  <li><a href="#rnn-매개변수" id="toc-rnn-매개변수" class="nav-link" data-scroll-target="#rnn-매개변수"><span class="header-section-number">7.12</span> RNN 매개변수</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Day6. RNN 학습하기 실습(Hands-On)</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="데이터-확인" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="데이터-확인"><span class="header-section-number">7.1</span> 데이터 확인</h2>
+<div id="cell-2" class="cell" data-outputid="b9969a72-a94f-4b2e-fc93-bebee5138aa0" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> pd.read_csv(<span class="st">"./data/Netflix_2015-2019.csv"</span>)  <span class="co"># 데이터 파일을 읽어옴</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>data.head()  <span class="co"># 5개의 데이터를 표시</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Date</th>
+<th data-quarto-table-cell-role="th">Open</th>
+<th data-quarto-table-cell-role="th">High</th>
+<th data-quarto-table-cell-role="th">Low</th>
+<th data-quarto-table-cell-role="th">Volume</th>
+<th data-quarto-table-cell-role="th">Close</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>2015-12-16</td>
+<td>120</td>
+<td>123</td>
+<td>118</td>
+<td>13181000</td>
+<td>123</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>2015-12-17</td>
+<td>124</td>
+<td>126</td>
+<td>122</td>
+<td>17284900</td>
+<td>123</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>2015-12-18</td>
+<td>121</td>
+<td>122</td>
+<td>118</td>
+<td>17948100</td>
+<td>118</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>2015-12-21</td>
+<td>120</td>
+<td>120</td>
+<td>116</td>
+<td>11670000</td>
+<td>117</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>2015-12-22</td>
+<td>117</td>
+<td>117</td>
+<td>115</td>
+<td>9689000</td>
+<td>116</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="데이터셋-전체-확인" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="데이터셋-전체-확인"><span class="header-section-number">7.2</span> 데이터셋 전체 확인</h2>
+<div id="cell-4" class="cell" data-outputid="57dbff9b-701b-417b-9e76-9d785c35a156" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 967 entries, 0 to 966
+Data columns (total 6 columns):
+ #   Column  Non-Null Count  Dtype 
+---  ------  --------------  ----- 
+ 0   Date    967 non-null    object
+ 1   Open    967 non-null    int64 
+ 2   High    967 non-null    int64 
+ 3   Low     967 non-null    int64 
+ 4   Volume  967 non-null    int64 
+ 5   Close   967 non-null    int64 
+dtypes: int64(5), object(1)
+memory usage: 45.5+ KB</code></pre>
+</div>
+</div>
+</section>
+<section id="데이터의-분포-확인" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="데이터의-분포-확인"><span class="header-section-number">7.3</span> 데이터의 분포 확인</h2>
+<div id="cell-6" class="cell" data-outputid="e70e8ec4-f297-4ad4-9460-119721740703" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>data_used <span class="op">=</span> data.iloc[:, <span class="dv">1</span>:<span class="dv">4</span>]  <span class="co"># 개장가, 최고가, 최저가 추가</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>data_used[<span class="st">"Close"</span>] <span class="op">=</span> data[<span class="st">"Close"</span>]  <span class="co"># 종가 추가</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>hist <span class="op">=</span> data_used.hist()</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="DL06_files/figure-html/cell-4-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="넷플릭스-데이터셋-정의" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="넷플릭스-데이터셋-정의"><span class="header-section-number">7.4</span> 넷플릭스 데이터셋 정의</h2>
+<div id="cell-8" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.utils.data.dataset <span class="im">import</span> Dataset</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Netflix(Dataset):</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.csv <span class="op">=</span> pd.read_csv(<span class="st">"./data/Netflix_2015-2019.csv"</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.data <span class="op">=</span> <span class="va">self</span>.csv.iloc[:, <span class="dv">1</span>:<span class="dv">4</span>].values</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.data <span class="op">=</span> <span class="va">self</span>.data <span class="op">/</span> np.<span class="bu">max</span>(<span class="va">self</span>.data)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.label <span class="op">=</span> data[<span class="st">"Close"</span>].values</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.label <span class="op">=</span> <span class="va">self</span>.label <span class="op">/</span> np.<span class="bu">max</span>(<span class="va">self</span>.label)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__len__</span>(<span class="va">self</span>):</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">len</span>(<span class="va">self</span>.data) <span class="op">-</span> <span class="dv">30</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__getitem__</span>(<span class="va">self</span>, i):</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>        data <span class="op">=</span> <span class="va">self</span>.data[i:i<span class="op">+</span><span class="dv">30</span>]</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>        label <span class="op">=</span> <span class="va">self</span>.label[i<span class="op">+</span><span class="dv">30</span>]</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> data, label</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-9" class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.utils.data.dataloader <span class="im">import</span> DataLoader</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>dataset <span class="op">=</span> Netflix()</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>loader <span class="op">=</span> DataLoader(dataset, batch_size<span class="op">=</span><span class="dv">32</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="rnn-클래스-정의하기" class="level2" data-number="7.5">
+<h2 data-number="7.5" class="anchored" data-anchor-id="rnn-클래스-정의하기"><span class="header-section-number">7.5</span> RNN 클래스 정의하기</h2>
+<div id="cell-11" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> RNN(nn.Module):</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>   <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>       <span class="bu">super</span>(RNN, <span class="va">self</span>).<span class="fu">__init__</span>()</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>       <span class="va">self</span>.rnn <span class="op">=</span> nn.RNN(input_size<span class="op">=</span><span class="dv">3</span>, hidden_size<span class="op">=</span><span class="dv">8</span>, num_layers<span class="op">=</span><span class="dv">5</span>, batch_first<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>       <span class="co"># (30,3) or (3,30)</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>       <span class="co"># batch_first =&gt; (32,30,3) / (30,3,32)</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>       </span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>       <span class="co"># 주가를 예측하는 MLP층 정의</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>       <span class="va">self</span>.fc1 <span class="op">=</span> nn.Linear(in_features<span class="op">=</span><span class="dv">240</span>, out_features<span class="op">=</span><span class="dv">64</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>       <span class="va">self</span>.fc2 <span class="op">=</span> nn.Linear(in_features<span class="op">=</span><span class="dv">64</span>, out_features<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>       <span class="va">self</span>.relu <span class="op">=</span> nn.ReLU() <span class="co"># 활성화 함수 정의</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>   <span class="kw">def</span> forward(<span class="va">self</span>, x, h0):</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>       x, hn <span class="op">=</span> <span class="va">self</span>.rnn(x, h0) <span class="co"># RNN층의 출력</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>       <span class="co"># MLP층의 입력으로 사용될 수 있도록 모양 변경</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>       x <span class="op">=</span> torch.reshape(x, (x.shape[<span class="dv">0</span>], <span class="op">-</span><span class="dv">1</span>))</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>       <span class="co"># MLP 층을 이용해 종가를 예측</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>       x <span class="op">=</span> <span class="va">self</span>.fc1(x)</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>       x <span class="op">=</span> <span class="va">self</span>.relu(x)</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>       x <span class="op">=</span> <span class="va">self</span>.fc2(x)</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>       <span class="co"># 예측한 종가를 1차원 벡터로 표현</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>       x <span class="op">=</span> torch.flatten(x)</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>       <span class="cf">return</span> x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="모델과-데이터셋-정의" class="level2" data-number="7.6">
+<h2 data-number="7.6" class="anchored" data-anchor-id="모델과-데이터셋-정의"><span class="header-section-number">7.6</span> 모델과 데이터셋 정의</h2>
+<div id="cell-13" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>device <span class="op">=</span> <span class="st">"cuda"</span> <span class="cf">if</span> torch.cuda.is_available() <span class="cf">else</span> <span class="st">"cpu"</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> RNN().to(device)  <span class="co"># 모델의 정의</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="최적화-정의" class="level2" data-number="7.7">
+<h2 data-number="7.7" class="anchored" data-anchor-id="최적화-정의"><span class="header-section-number">7.7</span> 최적화 정의</h2>
+<div id="cell-15" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.optim.adam <span class="im">import</span> Adam</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>optim <span class="op">=</span> Adam(params<span class="op">=</span>model.parameters(), lr<span class="op">=</span><span class="fl">0.0001</span>) <span class="co"># 사용할 최적화를 설정</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="학습-루프-정의" class="level2" data-number="7.8">
+<h2 data-number="7.8" class="anchored" data-anchor-id="학습-루프-정의"><span class="header-section-number">7.8</span> 학습 루프 정의</h2>
+<div id="cell-17" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tqdm</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> epoch <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">200</span>):</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>   iterator <span class="op">=</span> tqdm.tqdm(loader)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>   <span class="cf">for</span> data, label <span class="kw">in</span> iterator:</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>       optim.zero_grad()</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>       <span class="co"># 초기 은닉 상태</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>       h0 <span class="op">=</span> torch.zeros(<span class="dv">5</span>, data.shape[<span class="dv">0</span>], <span class="dv">8</span>).to(device)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>       <span class="co"># 모델의 예측값</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>       pred <span class="op">=</span> model(data.<span class="bu">type</span>(torch.FloatTensor).to(device), h0)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>       <span class="co"># 손실의 계산</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>       loss <span class="op">=</span> nn.MSELoss()(pred, label.<span class="bu">type</span>(torch.FloatTensor).to(device))</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>       </span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>       <span class="co"># 오차 역전파</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>       loss.backward()  </span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>       </span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>       <span class="co"># 최적화 진행</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>       optim.step() </span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>       iterator.set_description(<span class="ss">f"epoch</span><span class="sc">{</span>epoch<span class="sc">}</span><span class="ss"> loss:</span><span class="sc">{</span>loss<span class="sc">.</span>item()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>torch.save(model.state_dict(), <span class="st">"./rnn.pth"</span>)  <span class="co"># 모델 저장</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>epoch0 loss:0.1133282482624054: 100%|██████████| 30/30 [00:00&lt;00:00, 119.58it/s] 
+epoch1 loss:0.030863119289278984: 100%|██████████| 30/30 [00:00&lt;00:00, 121.90it/s] 
+epoch2 loss:0.012668101117014885: 100%|██████████| 30/30 [00:00&lt;00:00, 123.85it/s]
+epoch3 loss:0.00995593797415495: 100%|██████████| 30/30 [00:00&lt;00:00, 122.52it/s] 
+epoch4 loss:0.009051559492945671: 100%|██████████| 30/30 [00:00&lt;00:00, 129.73it/s] 
+epoch5 loss:0.0077210282906889915: 100%|██████████| 30/30 [00:00&lt;00:00, 123.01it/s]
+epoch6 loss:0.005778169259428978: 100%|██████████| 30/30 [00:00&lt;00:00, 121.98it/s]
+epoch7 loss:0.0030504465103149414: 100%|██████████| 30/30 [00:00&lt;00:00, 124.79it/s]
+epoch8 loss:0.00045336777111515403: 100%|██████████| 30/30 [00:00&lt;00:00, 126.42it/s]
+epoch9 loss:0.0036704300437122583: 100%|██████████| 30/30 [00:00&lt;00:00, 126.42it/s]
+epoch10 loss:0.0023120916448533535: 100%|██████████| 30/30 [00:00&lt;00:00, 119.69it/s]
+epoch11 loss:0.005660854279994965: 100%|██████████| 30/30 [00:00&lt;00:00, 130.78it/s] 
+epoch12 loss:0.006029938813298941: 100%|██████████| 30/30 [00:00&lt;00:00, 136.85it/s] 
+epoch13 loss:0.005122475326061249: 100%|██████████| 30/30 [00:00&lt;00:00, 122.28it/s] 
+epoch14 loss:0.005853748880326748: 100%|██████████| 30/30 [00:00&lt;00:00, 119.62it/s] 
+epoch15 loss:0.006356183905154467: 100%|██████████| 30/30 [00:00&lt;00:00, 122.83it/s] 
+epoch16 loss:0.006075398065149784: 100%|██████████| 30/30 [00:00&lt;00:00, 133.14it/s] 
+epoch17 loss:0.00603263545781374: 100%|██████████| 30/30 [00:00&lt;00:00, 123.29it/s]   
+epoch18 loss:0.006256675347685814: 100%|██████████| 30/30 [00:00&lt;00:00, 130.87it/s]  
+epoch19 loss:0.006165366154164076: 100%|██████████| 30/30 [00:00&lt;00:00, 125.39it/s] 
+epoch20 loss:0.006183885503560305: 100%|██████████| 30/30 [00:00&lt;00:00, 135.64it/s]  
+epoch21 loss:0.006131547968834639: 100%|██████████| 30/30 [00:00&lt;00:00, 126.95it/s]  
+epoch22 loss:0.006229641381651163: 100%|██████████| 30/30 [00:00&lt;00:00, 121.69it/s]  
+epoch23 loss:0.0061165704391896725: 100%|██████████| 30/30 [00:00&lt;00:00, 134.40it/s] 
+epoch24 loss:0.006140000652521849: 100%|██████████| 30/30 [00:00&lt;00:00, 123.59it/s] 
+epoch25 loss:0.0061017959378659725: 100%|██████████| 30/30 [00:00&lt;00:00, 124.61it/s] 
+epoch26 loss:0.006118049845099449: 100%|██████████| 30/30 [00:00&lt;00:00, 119.02it/s]  
+epoch27 loss:0.006087516900151968: 100%|██████████| 30/30 [00:00&lt;00:00, 130.29it/s]  
+epoch28 loss:0.006020728498697281: 100%|██████████| 30/30 [00:00&lt;00:00, 125.25it/s]  
+epoch29 loss:0.006041453219950199: 100%|██████████| 30/30 [00:00&lt;00:00, 132.88it/s] 
+epoch30 loss:0.0060264477506279945: 100%|██████████| 30/30 [00:00&lt;00:00, 121.10it/s] 
+epoch31 loss:0.005958861205726862: 100%|██████████| 30/30 [00:00&lt;00:00, 127.80it/s]  
+epoch32 loss:0.005957175046205521: 100%|██████████| 30/30 [00:00&lt;00:00, 118.89it/s]  
+epoch33 loss:0.005941562820225954: 100%|██████████| 30/30 [00:00&lt;00:00, 126.50it/s]  
+epoch34 loss:0.005897947121411562: 100%|██████████| 30/30 [00:00&lt;00:00, 126.41it/s]  
+epoch35 loss:0.005903737619519234: 100%|██████████| 30/30 [00:00&lt;00:00, 120.83it/s]  
+epoch36 loss:0.005882508587092161: 100%|██████████| 30/30 [00:00&lt;00:00, 136.39it/s]  
+epoch37 loss:0.005844305735081434: 100%|██████████| 30/30 [00:00&lt;00:00, 122.00it/s]  
+epoch38 loss:0.00581583334133029: 100%|██████████| 30/30 [00:00&lt;00:00, 134.36it/s]   
+epoch39 loss:0.005784646607935429: 100%|██████████| 30/30 [00:00&lt;00:00, 120.66it/s]  
+epoch40 loss:0.005783306900411844: 100%|██████████| 30/30 [00:00&lt;00:00, 132.82it/s] 
+epoch41 loss:0.005727968644350767: 100%|██████████| 30/30 [00:00&lt;00:00, 114.25it/s]  
+epoch42 loss:0.005704001989215612: 100%|██████████| 30/30 [00:00&lt;00:00, 118.70it/s] 
+epoch43 loss:0.005667759105563164: 100%|██████████| 30/30 [00:00&lt;00:00, 117.99it/s]  
+epoch44 loss:0.005675178486853838: 100%|██████████| 30/30 [00:00&lt;00:00, 124.57it/s]  
+epoch45 loss:0.005601053591817617: 100%|██████████| 30/30 [00:00&lt;00:00, 125.41it/s]  
+epoch46 loss:0.005596708972007036: 100%|██████████| 30/30 [00:00&lt;00:00, 125.38it/s]  
+epoch47 loss:0.005540730431675911: 100%|██████████| 30/30 [00:00&lt;00:00, 129.25it/s]  
+epoch48 loss:0.005552222486585379: 100%|██████████| 30/30 [00:00&lt;00:00, 124.38it/s]  
+epoch49 loss:0.0054680658504366875: 100%|██████████| 30/30 [00:00&lt;00:00, 128.92it/s] 
+epoch50 loss:0.005474218633025885: 100%|██████████| 30/30 [00:00&lt;00:00, 125.39it/s]  
+epoch51 loss:0.005416974890977144: 100%|██████████| 30/30 [00:00&lt;00:00, 134.03it/s]  
+epoch52 loss:0.005408560857176781: 100%|██████████| 30/30 [00:00&lt;00:00, 123.57it/s] 
+epoch53 loss:0.005350365769118071: 100%|██████████| 30/30 [00:00&lt;00:00, 129.45it/s]  
+epoch54 loss:0.005339012015610933: 100%|██████████| 30/30 [00:00&lt;00:00, 118.51it/s]  
+epoch55 loss:0.005309702828526497: 100%|██████████| 30/30 [00:00&lt;00:00, 124.97it/s]  
+epoch56 loss:0.005278876982629299: 100%|██████████| 30/30 [00:00&lt;00:00, 122.95it/s] 
+epoch57 loss:0.005240301601588726: 100%|██████████| 30/30 [00:00&lt;00:00, 129.30it/s] 
+epoch58 loss:0.0052159191109240055: 100%|██████████| 30/30 [00:00&lt;00:00, 121.82it/s] 
+epoch59 loss:0.00516312662512064: 100%|██████████| 30/30 [00:00&lt;00:00, 127.80it/s]   
+epoch60 loss:0.005157516337931156: 100%|██████████| 30/30 [00:00&lt;00:00, 132.02it/s] 
+epoch61 loss:0.005105071235448122: 100%|██████████| 30/30 [00:00&lt;00:00, 126.66it/s] 
+epoch62 loss:0.005099133588373661: 100%|██████████| 30/30 [00:00&lt;00:00, 133.47it/s]  
+epoch63 loss:0.005014801397919655: 100%|██████████| 30/30 [00:00&lt;00:00, 126.49it/s]  
+epoch64 loss:0.004990304354578257: 100%|██████████| 30/30 [00:00&lt;00:00, 136.48it/s] 
+epoch65 loss:0.004957042634487152: 100%|██████████| 30/30 [00:00&lt;00:00, 115.51it/s]  
+epoch66 loss:0.004911202006042004: 100%|██████████| 30/30 [00:00&lt;00:00, 129.49it/s]  
+epoch67 loss:0.0048713963478803635: 100%|██████████| 30/30 [00:00&lt;00:00, 126.50it/s] 
+epoch68 loss:0.004812187515199184: 100%|██████████| 30/30 [00:00&lt;00:00, 128.64it/s]  
+epoch69 loss:0.004762388300150633: 100%|██████████| 30/30 [00:00&lt;00:00, 117.37it/s]  
+epoch70 loss:0.004720356781035662: 100%|██████████| 30/30 [00:00&lt;00:00, 110.17it/s]  
+epoch71 loss:0.0046601807698607445: 100%|██████████| 30/30 [00:00&lt;00:00, 110.69it/s] 
+epoch72 loss:0.004588132258504629: 100%|██████████| 30/30 [00:00&lt;00:00, 110.40it/s]  
+epoch73 loss:0.004531672690063715: 100%|██████████| 30/30 [00:00&lt;00:00, 110.26it/s]  
+epoch74 loss:0.004467759281396866: 100%|██████████| 30/30 [00:00&lt;00:00, 97.47it/s]   
+epoch75 loss:0.004409820772707462: 100%|██████████| 30/30 [00:00&lt;00:00, 91.22it/s] 
+epoch76 loss:0.004338240250945091: 100%|██████████| 30/30 [00:00&lt;00:00, 95.92it/s] 
+epoch77 loss:0.0042843446135520935: 100%|██████████| 30/30 [00:00&lt;00:00, 96.10it/s]
+epoch78 loss:0.004217283800244331: 100%|██████████| 30/30 [00:00&lt;00:00, 113.11it/s]  
+epoch79 loss:0.0041459971107542515: 100%|██████████| 30/30 [00:00&lt;00:00, 111.51it/s] 
+epoch80 loss:0.004060149192810059: 100%|██████████| 30/30 [00:00&lt;00:00, 97.70it/s]   
+epoch81 loss:0.0040906621143221855: 100%|██████████| 30/30 [00:00&lt;00:00, 71.76it/s]
+epoch82 loss:0.0038173487409949303: 100%|██████████| 30/30 [00:00&lt;00:00, 113.22it/s] 
+epoch83 loss:0.003970103804022074: 100%|██████████| 30/30 [00:00&lt;00:00, 114.97it/s]  
+epoch84 loss:0.003781592706218362: 100%|██████████| 30/30 [00:00&lt;00:00, 123.48it/s]  
+epoch85 loss:0.003906263969838619: 100%|██████████| 30/30 [00:00&lt;00:00, 117.57it/s]  
+epoch86 loss:0.0037786427419632673: 100%|██████████| 30/30 [00:00&lt;00:00, 116.23it/s] 
+epoch87 loss:0.0037665064446628094: 100%|██████████| 30/30 [00:00&lt;00:00, 120.12it/s] 
+epoch88 loss:0.003673359751701355: 100%|██████████| 30/30 [00:00&lt;00:00, 119.77it/s] 
+epoch89 loss:0.0036173653788864613: 100%|██████████| 30/30 [00:00&lt;00:00, 113.94it/s] 
+epoch90 loss:0.0035650485660880804: 100%|██████████| 30/30 [00:00&lt;00:00, 115.48it/s] 
+epoch91 loss:0.0035149981267750263: 100%|██████████| 30/30 [00:00&lt;00:00, 126.76it/s] 
+epoch92 loss:0.0034552705474197865: 100%|██████████| 30/30 [00:00&lt;00:00, 112.03it/s]
+epoch93 loss:0.0034008114598691463: 100%|██████████| 30/30 [00:00&lt;00:00, 123.59it/s] 
+epoch94 loss:0.003343059681355953: 100%|██████████| 30/30 [00:00&lt;00:00, 121.64it/s] 
+epoch95 loss:0.0032971641048789024: 100%|██████████| 30/30 [00:00&lt;00:00, 116.74it/s] 
+epoch96 loss:0.003225145861506462: 100%|██████████| 30/30 [00:00&lt;00:00, 115.83it/s]  
+epoch97 loss:0.0031819292344152927: 100%|██████████| 30/30 [00:00&lt;00:00, 128.48it/s]
+epoch98 loss:0.0031142625957727432: 100%|██████████| 30/30 [00:00&lt;00:00, 116.01it/s] 
+epoch99 loss:0.0030629942193627357: 100%|██████████| 30/30 [00:00&lt;00:00, 124.85it/s] 
+epoch100 loss:0.002995492424815893: 100%|██████████| 30/30 [00:00&lt;00:00, 112.66it/s]  
+epoch101 loss:0.0029346959199756384: 100%|██████████| 30/30 [00:00&lt;00:00, 119.34it/s] 
+epoch102 loss:0.0028710351325571537: 100%|██████████| 30/30 [00:00&lt;00:00, 118.52it/s] 
+epoch103 loss:0.0028376334812492132: 100%|██████████| 30/30 [00:00&lt;00:00, 121.42it/s] 
+epoch104 loss:0.0027558174915611744: 100%|██████████| 30/30 [00:00&lt;00:00, 117.53it/s] 
+epoch105 loss:0.002681717276573181: 100%|██████████| 30/30 [00:00&lt;00:00, 112.55it/s]  
+epoch106 loss:0.0026482255198061466: 100%|██████████| 30/30 [00:00&lt;00:00, 118.73it/s] 
+epoch107 loss:0.002609373303130269: 100%|██████████| 30/30 [00:00&lt;00:00, 128.86it/s]  
+epoch108 loss:0.002561823930591345: 100%|██████████| 30/30 [00:00&lt;00:00, 123.00it/s]  
+epoch109 loss:0.0025207102298736572: 100%|██████████| 30/30 [00:00&lt;00:00, 114.42it/s] 
+epoch110 loss:0.002469426952302456: 100%|██████████| 30/30 [00:00&lt;00:00, 121.54it/s] 
+epoch111 loss:0.0024231309071183205: 100%|██████████| 30/30 [00:00&lt;00:00, 113.24it/s]
+epoch112 loss:0.002365459455177188: 100%|██████████| 30/30 [00:00&lt;00:00, 117.43it/s]  
+epoch113 loss:0.0023124138824641705: 100%|██████████| 30/30 [00:00&lt;00:00, 112.73it/s] 
+epoch114 loss:0.002249119570478797: 100%|██████████| 30/30 [00:00&lt;00:00, 116.26it/s] 
+epoch115 loss:0.0021924935281276703: 100%|██████████| 30/30 [00:00&lt;00:00, 116.57it/s]
+epoch116 loss:0.002154420129954815: 100%|██████████| 30/30 [00:00&lt;00:00, 112.19it/s]  
+epoch117 loss:0.002107753185555339: 100%|██████████| 30/30 [00:00&lt;00:00, 120.34it/s] 
+epoch118 loss:0.0020624306052923203: 100%|██████████| 30/30 [00:00&lt;00:00, 116.33it/s] 
+epoch119 loss:0.00202119629830122: 100%|██████████| 30/30 [00:00&lt;00:00, 125.36it/s]   
+epoch120 loss:0.001973542384803295: 100%|██████████| 30/30 [00:00&lt;00:00, 116.95it/s]  
+epoch121 loss:0.001920867944136262: 100%|██████████| 30/30 [00:00&lt;00:00, 122.57it/s]  
+epoch122 loss:0.0018701364751905203: 100%|██████████| 30/30 [00:00&lt;00:00, 112.01it/s] 
+epoch123 loss:0.0018160560866817832: 100%|██████████| 30/30 [00:00&lt;00:00, 114.94it/s]
+epoch124 loss:0.001759301288984716: 100%|██████████| 30/30 [00:00&lt;00:00, 122.99it/s]  
+epoch125 loss:0.0016985404072329402: 100%|██████████| 30/30 [00:00&lt;00:00, 111.75it/s] 
+epoch126 loss:0.001650456222705543: 100%|██████████| 30/30 [00:00&lt;00:00, 123.63it/s]  
+epoch127 loss:0.0015937809366732836: 100%|██████████| 30/30 [00:00&lt;00:00, 104.58it/s]
+epoch128 loss:0.0015555077698081732: 100%|██████████| 30/30 [00:00&lt;00:00, 111.63it/s]
+epoch129 loss:0.0015194652369245887: 100%|██████████| 30/30 [00:00&lt;00:00, 121.32it/s] 
+epoch130 loss:0.001473985961638391: 100%|██████████| 30/30 [00:00&lt;00:00, 118.15it/s]  
+epoch131 loss:0.0014418229693546891: 100%|██████████| 30/30 [00:00&lt;00:00, 123.16it/s] 
+epoch132 loss:0.0013955087633803487: 100%|██████████| 30/30 [00:00&lt;00:00, 111.74it/s]
+epoch133 loss:0.0013522175140678883: 100%|██████████| 30/30 [00:00&lt;00:00, 117.16it/s] 
+epoch134 loss:0.001302353455685079: 100%|██████████| 30/30 [00:00&lt;00:00, 119.08it/s] 
+epoch135 loss:0.0012536747381091118: 100%|██████████| 30/30 [00:00&lt;00:00, 118.57it/s] 
+epoch136 loss:0.0012033925158903003: 100%|██████████| 30/30 [00:00&lt;00:00, 128.07it/s]
+epoch137 loss:0.0011487404117360711: 100%|██████████| 30/30 [00:00&lt;00:00, 118.63it/s]
+epoch138 loss:0.0011151385260745883: 100%|██████████| 30/30 [00:00&lt;00:00, 116.61it/s]
+epoch139 loss:0.0010848306119441986: 100%|██████████| 30/30 [00:00&lt;00:00, 121.17it/s]
+epoch140 loss:0.0010581339010968804: 100%|██████████| 30/30 [00:00&lt;00:00, 112.66it/s] 
+epoch141 loss:0.0010224267607554793: 100%|██████████| 30/30 [00:00&lt;00:00, 123.86it/s]
+epoch142 loss:0.0009922855533659458: 100%|██████████| 30/30 [00:00&lt;00:00, 113.65it/s]
+epoch143 loss:0.0009605060913600028: 100%|██████████| 30/30 [00:00&lt;00:00, 126.86it/s] 
+epoch144 loss:0.000924227642826736: 100%|██████████| 30/30 [00:00&lt;00:00, 118.28it/s]  
+epoch145 loss:0.0008843218092806637: 100%|██████████| 30/30 [00:00&lt;00:00, 120.95it/s]
+epoch146 loss:0.0008454030612483621: 100%|██████████| 30/30 [00:00&lt;00:00, 119.41it/s] 
+epoch147 loss:0.0008045530994422734: 100%|██████████| 30/30 [00:00&lt;00:00, 115.48it/s] 
+epoch148 loss:0.000767334655392915: 100%|██████████| 30/30 [00:00&lt;00:00, 126.78it/s]  
+epoch149 loss:0.0007330970256589353: 100%|██████████| 30/30 [00:00&lt;00:00, 120.77it/s] 
+epoch150 loss:0.0006993492715992033: 100%|██████████| 30/30 [00:00&lt;00:00, 116.16it/s] 
+epoch151 loss:0.0006747493171133101: 100%|██████████| 30/30 [00:00&lt;00:00, 110.30it/s] 
+epoch152 loss:0.0006520745810121298: 100%|██████████| 30/30 [00:00&lt;00:00, 121.44it/s] 
+epoch153 loss:0.0006302078254520893: 100%|██████████| 30/30 [00:00&lt;00:00, 118.10it/s] 
+epoch154 loss:0.0006130611873231828: 100%|██████████| 30/30 [00:00&lt;00:00, 111.79it/s]
+epoch155 loss:0.0005927855963818729: 100%|██████████| 30/30 [00:00&lt;00:00, 112.85it/s] 
+epoch156 loss:0.0005751944263465703: 100%|██████████| 30/30 [00:00&lt;00:00, 111.45it/s] 
+epoch157 loss:0.0005558125558309257: 100%|██████████| 30/30 [00:00&lt;00:00, 112.56it/s]
+epoch158 loss:0.0005329706473276019: 100%|██████████| 30/30 [00:00&lt;00:00, 120.48it/s] 
+epoch159 loss:0.0005123721202835441: 100%|██████████| 30/30 [00:00&lt;00:00, 116.03it/s] 
+epoch160 loss:0.0004912657896056771: 100%|██████████| 30/30 [00:00&lt;00:00, 114.78it/s] 
+epoch161 loss:0.000469820894068107: 100%|██████████| 30/30 [00:00&lt;00:00, 115.93it/s]  
+epoch162 loss:0.00045026993029750884: 100%|██████████| 30/30 [00:00&lt;00:00, 118.67it/s]
+epoch163 loss:0.00043349116458557546: 100%|██████████| 30/30 [00:00&lt;00:00, 118.30it/s]
+epoch164 loss:0.00041893270099535584: 100%|██████████| 30/30 [00:00&lt;00:00, 115.44it/s]
+epoch165 loss:0.0004081387014593929: 100%|██████████| 30/30 [00:00&lt;00:00, 116.95it/s] 
+epoch166 loss:0.0003977203741669655: 100%|██████████| 30/30 [00:00&lt;00:00, 119.47it/s] 
+epoch167 loss:0.000391818699426949: 100%|██████████| 30/30 [00:00&lt;00:00, 111.75it/s]  
+epoch168 loss:0.00038579796091653407: 100%|██████████| 30/30 [00:00&lt;00:00, 119.55it/s]
+epoch169 loss:0.00038047824637033045: 100%|██████████| 30/30 [00:00&lt;00:00, 113.89it/s]
+epoch170 loss:0.00037801385042257607: 100%|██████████| 30/30 [00:00&lt;00:00, 110.56it/s]
+epoch171 loss:0.0003740711836144328: 100%|██████████| 30/30 [00:00&lt;00:00, 118.63it/s]
+epoch172 loss:0.00036944469320587814: 100%|██████████| 30/30 [00:00&lt;00:00, 99.85it/s]
+epoch173 loss:0.00036325736436992884: 100%|██████████| 30/30 [00:00&lt;00:00, 122.54it/s]
+epoch174 loss:0.0003559450851753354: 100%|██████████| 30/30 [00:00&lt;00:00, 117.81it/s] 
+epoch175 loss:0.00034700174001045525: 100%|██████████| 30/30 [00:00&lt;00:00, 123.13it/s]
+epoch176 loss:0.00033846087171696126: 100%|██████████| 30/30 [00:00&lt;00:00, 119.09it/s]
+epoch177 loss:0.0003305237914901227: 100%|██████████| 30/30 [00:00&lt;00:00, 112.44it/s] 
+epoch178 loss:0.00032653583912178874: 100%|██████████| 30/30 [00:00&lt;00:00, 124.61it/s]
+epoch179 loss:0.00031720136757940054: 100%|██████████| 30/30 [00:00&lt;00:00, 111.00it/s]
+epoch180 loss:0.0003151640121359378: 100%|██████████| 30/30 [00:00&lt;00:00, 110.58it/s] 
+epoch181 loss:0.0003129615215584636: 100%|██████████| 30/30 [00:00&lt;00:00, 121.27it/s]
+epoch182 loss:0.00031068839598447084: 100%|██████████| 30/30 [00:00&lt;00:00, 119.12it/s]
+epoch183 loss:0.00030987217905931175: 100%|██████████| 30/30 [00:00&lt;00:00, 119.89it/s]
+epoch184 loss:0.0003096576256211847: 100%|██████████| 30/30 [00:00&lt;00:00, 113.49it/s] 
+epoch185 loss:0.00030973891261965036: 100%|██████████| 30/30 [00:00&lt;00:00, 116.75it/s]
+epoch186 loss:0.0003112372651230544: 100%|██████████| 30/30 [00:00&lt;00:00, 125.94it/s] 
+epoch187 loss:0.0003143460489809513: 100%|██████████| 30/30 [00:00&lt;00:00, 118.02it/s]
+epoch188 loss:0.00031802227022126317: 100%|██████████| 30/30 [00:00&lt;00:00, 129.65it/s]
+epoch189 loss:0.0003228485875297338: 100%|██████████| 30/30 [00:00&lt;00:00, 115.67it/s] 
+epoch190 loss:0.00032656837720423937: 100%|██████████| 30/30 [00:00&lt;00:00, 121.05it/s]
+epoch191 loss:0.0003281572717241943: 100%|██████████| 30/30 [00:00&lt;00:00, 124.44it/s] 
+epoch192 loss:0.0003267954452894628: 100%|██████████| 30/30 [00:00&lt;00:00, 112.61it/s] 
+epoch193 loss:0.0003205299726687372: 100%|██████████| 30/30 [00:00&lt;00:00, 115.31it/s] 
+epoch194 loss:0.0003109335375484079: 100%|██████████| 30/30 [00:00&lt;00:00, 125.52it/s] 
+epoch195 loss:0.00030183859053067863: 100%|██████████| 30/30 [00:00&lt;00:00, 120.50it/s]
+epoch196 loss:0.0002976426621899009: 100%|██████████| 30/30 [00:00&lt;00:00, 115.44it/s] 
+epoch197 loss:0.00030353126931004226: 100%|██████████| 30/30 [00:00&lt;00:00, 116.80it/s]
+epoch198 loss:0.00032168166944757104: 100%|██████████| 30/30 [00:00&lt;00:00, 114.43it/s]
+epoch199 loss:0.00035044897231273353: 100%|██████████| 30/30 [00:00&lt;00:00, 114.56it/s]</code></pre>
+</div>
+</div>
+</section>
+<section id="모델-성능-평가하기" class="level2" data-number="7.9">
+<h2 data-number="7.9" class="anchored" data-anchor-id="모델-성능-평가하기"><span class="header-section-number">7.9</span> 모델 성능 평가하기</h2>
+<div id="cell-19" class="cell" data-outputid="475ac5e6-2bad-474a-ff49-07615d702a31" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 예측값을 위한 데이터 로더</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>loader <span class="op">=</span> DataLoader(dataset, batch_size<span class="op">=</span><span class="dv">1</span>)  </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 예측값들을 저장하는 리스트</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>preds <span class="op">=</span> []  </span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>total_loss <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.no_grad():</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>   <span class="co"># 모델의 가중치 불러오기</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>   model.load_state_dict(torch.load(<span class="st">"rnn.pth"</span>, map_location<span class="op">=</span>device))</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>   <span class="cf">for</span> data, label <span class="kw">in</span> loader:</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>       h0 <span class="op">=</span> torch.zeros(<span class="dv">5</span>, data.shape[<span class="dv">0</span>], <span class="dv">8</span>).to(device)  <span class="co"># 초기 은닉상태 정의</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>       <span class="co"># 모델의 예측값 출력</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>       pred <span class="op">=</span> model(data.<span class="bu">type</span>(torch.FloatTensor).to(device), h0)</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>       preds.append(pred.item())  <span class="co"># 예측값을 리스트에 추가</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>       loss <span class="op">=</span> nn.MSELoss()(pred,</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>                           label.<span class="bu">type</span>(torch.FloatTensor).to(device))  <span class="co"># 손실계산</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>       total_loss <span class="op">+=</span> loss<span class="op">/</span><span class="bu">len</span>(loader)  <span class="co"># 손실의 평균치 계산</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>total_loss.item()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<pre><code>0.0012640039203688502</code></pre>
+</div>
+</div>
+</section>
+<section id="그림으로-확인하기" class="level2" data-number="7.10">
+<h2 data-number="7.10" class="anchored" data-anchor-id="그림으로-확인하기"><span class="header-section-number">7.10</span> 그림으로 확인하기</h2>
+<div id="cell-21" class="cell" data-outputid="b2e167e9-9de8-463f-8131-aa09cf3c118a" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>plt.plot(preds, label<span class="op">=</span><span class="st">"prediction"</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>plt.plot(dataset.label[<span class="dv">30</span>:], label<span class="op">=</span><span class="st">"actual"</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="DL06_files/figure-html/cell-12-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="캘리포니아-집-값-예측" class="level2" data-number="7.11">
+<h2 data-number="7.11" class="anchored" data-anchor-id="캘리포니아-집-값-예측"><span class="header-section-number">7.11</span> 캘리포니아 집 값 예측</h2>
+<section id="loading-the-data-eda-and-data-preparation" class="level3" data-number="7.11.1">
+<h3 data-number="7.11.1" class="anchored" data-anchor-id="loading-the-data-eda-and-data-preparation"><span class="header-section-number">7.11.1</span> Loading the data, EDA and data preparation</h3>
+<div id="cell-24" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> fetch_california_housing</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>_data <span class="op">=</span> fetch_california_housing()</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(_data.data, columns<span class="op">=</span>_data.feature_names)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'target'</span>] <span class="op">=</span> _data.target</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-25" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.utils.data <span class="im">import</span> Dataset</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MyDataset(Dataset):</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, df<span class="op">=</span>df):</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.x <span class="op">=</span> df.iloc[:, :<span class="op">-</span><span class="dv">1</span>].values</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.y <span class="op">=</span> df.iloc[:, <span class="op">-</span><span class="dv">1</span>:].values</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__len__</span>(<span class="va">self</span>):</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.x.shape[<span class="dv">0</span>]</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__getitem__</span>(<span class="va">self</span>, index):</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> <span class="va">self</span>.x[index]</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>        y <span class="op">=</span> <span class="va">self</span>.y[index]</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> torch.tensor(x, dtype<span class="op">=</span>torch.<span class="bu">float</span>), torch.tensor(y, dtype<span class="op">=</span>torch.<span class="bu">float</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-26" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>ds <span class="op">=</span> MyDataset(df)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>sample <span class="op">=</span> <span class="bu">next</span>(<span class="bu">iter</span>(ds))</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(sample[<span class="dv">0</span>].shape, sample[<span class="dv">1</span>].shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>torch.Size([8]) torch.Size([1])</code></pre>
+</div>
+</div>
+<div id="cell-27" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.utils.data <span class="im">import</span> DataLoader</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> prepare_loaders(df <span class="op">=</span> df, index <span class="op">=</span> <span class="dv">15640</span>, batch_size <span class="op">=</span> <span class="dv">512</span>):</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1) Train Valids Split</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    train <span class="op">=</span> df[:index].reset_index(drop <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    valid <span class="op">=</span> df[index:].reset_index(drop <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2) train, valid -&gt; MyDataset(Dataset) --&gt; train_ds, valid_ds</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    train_ds <span class="op">=</span> MyDataset(train)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    valid_ds <span class="op">=</span> MyDataset(valid)</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 3) train_ds, valid_ds -&gt; DataLoader -&gt; train_loader, valid_loader</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    train_loader <span class="op">=</span> DataLoader(train_ds, shuffle <span class="op">=</span> <span class="va">True</span>, batch_size <span class="op">=</span> batch_size)</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    valid_loader <span class="op">=</span> DataLoader(valid_ds, shuffle <span class="op">=</span> <span class="va">False</span>, batch_size <span class="op">=</span> batch_size)</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'DataLoader Completed'</span>)</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> train_loader, valid_loader</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>train_loader, valid_loader <span class="op">=</span> prepare_loaders(df <span class="op">=</span> df, index <span class="op">=</span> <span class="dv">15640</span>, batch_size <span class="op">=</span> <span class="dv">512</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>DataLoader Completed</code></pre>
+</div>
+</div>
+<div id="cell-28" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>sample <span class="op">=</span> <span class="bu">next</span>(<span class="bu">iter</span>(train_loader))</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(sample[<span class="dv">0</span>].shape, sample[<span class="dv">1</span>].shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>torch.Size([512, 8]) torch.Size([512, 1])</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="rnn-매개변수" class="level2" data-number="7.12">
+<h2 data-number="7.12" class="anchored" data-anchor-id="rnn-매개변수"><span class="header-section-number">7.12</span> RNN 매개변수</h2>
+<div id="cell-30" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>input_size <span class="op">=</span> <span class="dv">5</span> <span class="co"># 입력의 크기</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>hidden_size <span class="op">=</span> <span class="dv">8</span> <span class="co"># 은닉 상태의 크기</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-31" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co"># (batch_size, time_steps, input_size)</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 배치 크기는 1, 10번의 시점동안 5차원의 입력 벡터가 들어가도록 텐서를 정의</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>inputs <span class="op">=</span> torch.Tensor(<span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-32" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>cell <span class="op">=</span> nn.RNN(input_size, hidden_size, batch_first<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-33" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>outputs, _status <span class="op">=</span> cell(inputs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-34" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 10번의 시점동안 8차원의 은닉상태가 출력</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(outputs.shape) <span class="co"># 모든 time-step의 hidden_state</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>torch.Size([1, 10, 8])</code></pre>
+</div>
+</div>
+<div id="cell-35" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 다시 말해 마지막 시점의 은닉 상태의 크기를 확인해보겠습니다.</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(_status.shape) <span class="co"># 최종 time-step의 hidden_state</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>torch.Size([1, 1, 8])</code></pre>
+</div>
+</div>
+<div id="cell-36" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 이 2개인 깊은 순환 신경망의 경우, 앞서 실습했던 임의의 입력에 대해서 출력</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>cell <span class="op">=</span> nn.RNN(input_size <span class="op">=</span> <span class="dv">5</span>, hidden_size <span class="op">=</span> <span class="dv">8</span>, num_layers <span class="op">=</span> <span class="dv">2</span>, batch_first<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-37" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>outputs, _status <span class="op">=</span> cell(inputs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-38" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(outputs.shape) <span class="co"># 모든 time-step의 hidden_state</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>torch.Size([1, 10, 8])</code></pre>
+</div>
+</div>
+<div id="cell-39" class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(_status.shape) <span class="co"># (층의 개수, 배치 크기, 은닉 상태의 크기)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>torch.Size([2, 1, 8])</code></pre>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./DL05.html" class="pagination-link  aria-label=" &lt;span="" vgg와="" resnet="" 학습하기="" 실습(hands-on)&lt;="" span&gt;"="">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Day5. VGG와 ResNet 학습하기 실습(Hands-On)</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./DL07.html" class="pagination-link" aria-label="<span class='chapter-number'>8</span>&nbsp; <span class='chapter-title'>Day7. LSTM 학습하기 실습(Hands-On)</span>">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Day7. LSTM 학습하기 실습(Hands-On)</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -12,3 +12,8 @@ torch
 torchvision 
 torchaudio
 missingno
+tqdm
+streamlit
+streamlit-drawable-canvas
+opencv-python
+torchinfo

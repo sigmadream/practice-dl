@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.549">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>머신러닝/딥러닝 입문 - 12&nbsp; 벡터, 행렬 그리고 텐서(Vector, Matrix and Tensor)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./DL00_Python.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./DL00_Torch.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">벡터, 행렬 그리고 텐서(Vector, Matrix and Tensor)</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">머신러닝/딥러닝 입문</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">PNU 2024, 통계학과 딥러닝 특강</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Day1. 전처리 실습(Hands-On)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Day2. 기울기와 절편, 그리고 회귀 실습(Hands-On)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Day3. 머신러닝과 딥러닝 실습(Hands-On)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Day4. CNN을 사용한 특징 기반 분류 v1.2 실습(Hands-On)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Day5. VGG와 ResNet 학습하기 실습(Hands-On)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Day6. RNN 학습하기 실습(Hands-On)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Day7. LSTM 학습하기 실습(Hands-On)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Day8. 어텐션! 실습(Hands-On)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Day9. GAN 실습(Hands-On)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL00_Python.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">함수와 클래스</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL00_Torch.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">벡터, 행렬 그리고 텐서(Vector, Matrix and Tensor)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#파이토치-텐서-선언하기pytorch-tensor-allocation" id="toc-파이토치-텐서-선언하기pytorch-tensor-allocation" class="nav-link active" data-scroll-target="#파이토치-텐서-선언하기pytorch-tensor-allocation"><span class="header-section-number">12.1</span> 파이토치 텐서 선언하기(PyTorch Tensor Allocation)</a>
+  <ul class="collapse">
+  <li><a href="#d-with-pytorch" id="toc-d-with-pytorch" class="nav-link" data-scroll-target="#d-with-pytorch"><span class="header-section-number">12.1.1</span> 1D with PyTorch</a></li>
+  <li><a href="#d-with-pytorch-1" id="toc-d-with-pytorch-1" class="nav-link" data-scroll-target="#d-with-pytorch-1"><span class="header-section-number">12.1.2</span> 2D with PyTorch</a></li>
+  <li><a href="#브로드캐스팅broadcasting" id="toc-브로드캐스팅broadcasting" class="nav-link" data-scroll-target="#브로드캐스팅broadcasting"><span class="header-section-number">12.1.3</span> 브로드캐스팅(Broadcasting)</a></li>
+  </ul></li>
+  <li><a href="#행렬-곱셈과-곱셈의-차이matrix-multiplication-vs.-multiplication" id="toc-행렬-곱셈과-곱셈의-차이matrix-multiplication-vs.-multiplication" class="nav-link" data-scroll-target="#행렬-곱셈과-곱셈의-차이matrix-multiplication-vs.-multiplication"><span class="header-section-number">12.2</span> 행렬 곱셈과 곱셈의 차이(Matrix Multiplication Vs. Multiplication)</a></li>
+  <li><a href="#평균" id="toc-평균" class="nav-link" data-scroll-target="#평균"><span class="header-section-number">12.3</span> 평균</a></li>
+  <li><a href="#덧셈" id="toc-덧셈" class="nav-link" data-scroll-target="#덧셈"><span class="header-section-number">12.4</span> 덧셈</a></li>
+  <li><a href="#최대max와-아그맥스argmax" id="toc-최대max와-아그맥스argmax" class="nav-link" data-scroll-target="#최대max와-아그맥스argmax"><span class="header-section-number">12.5</span> 최대(Max)와 아그맥스(ArgMax)</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">벡터, 행렬 그리고 텐서(Vector, Matrix and Tensor)</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>딥 러닝을 하게 되면 다루게 되는 가장 기본적인 단위는 벡터, 행렬, 텐서입니다. 차원이 없는 값을 스칼라(위의 그림에는 없음), 1차원으로 구성된 값을 우리는 벡터라고 합니다.</p>
+<p>2차원으로 구성된 값을 행렬(Matrix)라고 합니다. 그리고 3차원이 되면 우리는 텐서(Tensor)라고 부릅니다. 사실 우리는 3차원의 세상에 살고 있으므로, 4차원 이상부터는 머리로 생각하기는 어렵습니다. 4차원은 3차원의 텐서를 위로 쌓아 올린 모습으로 상상해보겠습니다.</p>
+<p>5차원은 그 4차원을 다시 옆으로 확장한 모습으로 생각해봅시다. 6차원은 5차원을 뒤로 확장한 모습으로 볼 수 있습니다.</p>
+<p>데이터사이언스 분야 한정으로 3차원 이상의 텐서는 그냥 다차원 행렬 또는 배열로 간주할 수 있습니다. 또한 주로 3차원 이상을 텐서라고 하긴 하지만, 1차원 벡터나 2차원인 행렬도 텐서라고 표현하기도 합니다. 같은 표현입니다. 벡터 = 1차원 텐서, 2차원 행렬 = 2차원 텐서. 그리고 3차원 텐서, 4차원 텐서, 5차원 텐서 등…</p>
+<p>사실 딥 러닝을 할때 다루고 있는 행렬 또는 텐서의 크기를 고려하는 것은 항상 중요합니다. 여기서는 앞으로 행렬과 텐서의 크기를 표현할 때 다음과 같은 방법으로 표기합니다. 앞으로 다루게 될 텐서 중 가장 전형적인 2차원 텐서를 예로 들어볼까요?</p>
+<p><span class="math inline">\(|t| = (Batch size, dim)\)</span></p>
+<p>위의 경우는 2차원 텐서의 크기 <span class="math inline">\(|t|\)</span>를 <span class="math inline">\((batch size × dimension)\)</span>으로 표현하였을 경우입니다. 행렬에서 행의 크기가 batch size, 열의 크기가 dim이라는 의미입니다.</p>
+<p>훈련 데이터 하나의 크기를 256이라고 해봅시다. [3, 1, 2, 5, …] 이런 숫자들의 나열이 256의 길이로 있다고 상상하면됩니다. 다시 말해 훈련 데이터 하나 = 벡터의 차원은 256입니다. 만약 이런 훈련 데이터의 개수가 3000개라고 한다면, 현재 전체 훈련 데이터의 크기는 3,000 × 256입니다. 행렬이니까 2D 텐서네요. 3,000개를 1개씩 꺼내서 처리하는 것도 가능하지만 컴퓨터는 훈련 데이터를 하나씩 처리하는 것보다 보통 덩어리로 처리합니다. 3,000개에서 64개씩 꺼내서 처리한다고 한다면 이 때 batch size를 64라고 합니다. 그렇다면 컴퓨터가 한 번에 처리하는 2D 텐서의 크기는 (batch size × dim) = 64 × 256입니다.</p>
+<p><span class="math inline">\(|t| = (batch size, width, height)\)</span></p>
+<p>일반적으로 자연어 처리보다 비전 분야(이미지, 영상 처리)를 하시게 된다면 좀 더 복잡한 텐서를 다루게 됩니다. 이미지라는 것은 가로, 세로라는 것이 존재합니다. 그리고 여러 장의 이미지, 그러니까 batch size로 구성하게 되면 아래와 같이 3차원의 텐서가 됩니다. 가로는 너비(width), 그리고 안쪽으로는 높이(height)가 됩니다.</p>
+<p><span class="math inline">\(|t| = (batch size, length, dim)\)</span></p>
+<p>보통 (batch size, 문장 길이, 단어 벡터의 차원)이라는 3차원 텐서를 사용합니다.</p>
+<p>아래와 같이 4개의 문장으로 구성된 전체 훈련 데이터가 있습니다.</p>
+<p><code>[[나는 사과를 좋아해], [나는 바나나를 좋아해], [나는 사과를 싫어해], [나는 바나나를 싫어해]]</code></p>
+<p>컴퓨터는 아직 이 상태로는 ’나는 사과를 좋아해’가 단어가 1개인지 3개인지 이해하지 못합니다. 우선 컴퓨터의 입력으로 사용하기 위해서는 단어별로 나눠주어야 합니다.</p>
+<p><code>[['나는', '사과를', '좋아해'], ['나는', '바나나를', '좋아해'], ['나는', '사과를', '싫어해'], ['나는', '바나나를', '싫어해']]</code></p>
+<p>이제 훈련 데이터의 크기는 4 × 3의 크기를 가지는 2D 텐서입니다. 컴퓨터는 텍스트보다는 숫자를 더 잘 처리할 수 있습니데. 이제 각 단어를 벡터로 만들겁니다. 아래와 같이 단어를 3차원의 벡터로 변환했다고 하겠습니다.</p>
+<pre><code>'나는' = [0.1, 0.2, 0.9]
+'사과를' = [0.3, 0.5, 0.1]
+'바나나를' = [0.3, 0.5, 0.2]
+'좋아해' = [0.7, 0.6, 0.5]
+'싫어해' = [0.5, 0.6, 0.7]</code></pre>
+<p>위 기준을 따라서 훈련 데이터를 재구성하면 아래와 같습니다.</p>
+<pre><code>[[[0.1, 0.2, 0.9], [0.3, 0.5, 0.1], [0.7, 0.6, 0.5]],
+ [[0.1, 0.2, 0.9], [0.3, 0.5, 0.2], [0.7, 0.6, 0.5]],
+ [[0.1, 0.2, 0.9], [0.3, 0.5, 0.1], [0.5, 0.6, 0.7]],
+ [[0.1, 0.2, 0.9], [0.3, 0.5, 0.2], [0.5, 0.6, 0.7]]]</code></pre>
+<p>이제 훈련 데이터는 4 × 3 × 3의 크기를 가지는 3D 텐서입니다. 이제 batch size를 2로 해보겠습니다.</p>
+<pre><code>첫번째 배치 #1
+[[[0.1, 0.2, 0.9], [0.3, 0.5, 0.1], [0.7, 0.6, 0.5]],
+ [[0.1, 0.2, 0.9], [0.3, 0.5, 0.2], [0.7, 0.6, 0.5]]]
+
+두번째 배치 #2
+[[[0.1, 0.2, 0.9], [0.3, 0.5, 0.1], [0.5, 0.6, 0.7]],
+ [[0.1, 0.2, 0.9], [0.3, 0.5, 0.2], [0.5, 0.6, 0.7]]]</code></pre>
+<section id="파이토치-텐서-선언하기pytorch-tensor-allocation" class="level2" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="파이토치-텐서-선언하기pytorch-tensor-allocation"><span class="header-section-number">12.1</span> 파이토치 텐서 선언하기(PyTorch Tensor Allocation)</h2>
+<p>파이토치는 Numpy와 매우 유사합니다. 하지만 더 낫습니다(better). 우선 torch를 임포트합니다.</p>
+<pre><code>import torch</code></pre>
+<section id="d-with-pytorch" class="level3" data-number="12.1.1">
+<h3 data-number="12.1.1" class="anchored" data-anchor-id="d-with-pytorch"><span class="header-section-number">12.1.1</span> 1D with PyTorch</h3>
+<pre><code>t = torch.FloatTensor([0., 1., 2., 3., 4., 5., 6.])
+print(t)</code></pre>
+<p>dim()을 사용하면 현재 텐서의 차원을 보여줍니다. shape나 size()를 사용하면 크기를 확인할 수 있습니다.</p>
+<pre><code>print(t.dim())  # rank. 즉, 차원
+print(t.shape)  # shape
+print(t.size()) # shape
+
+1
+torch.Size([7])
+torch.Size([7])</code></pre>
+<p>현재 1차원 텐서이며, 원소는 7개입니다. 인덱스로 접근하는 것과 슬라이싱을 해봅시다. 방법은 Numpy 실습과 같습니다.</p>
+<pre><code>print(t[0], t[1], t[-1])  # 인덱스로 접근
+print(t[2:5], t[4:-1])    # 슬라이싱
+print(t[:2], t[3:])       # 슬라이싱
+
+tensor(0.) tensor(1.) tensor(6.)
+tensor([2., 3., 4.]) tensor([4., 5.])
+tensor([0., 1.]) tensor([3., 4., 5., 6.])</code></pre>
+</section>
+<section id="d-with-pytorch-1" class="level3" data-number="12.1.2">
+<h3 data-number="12.1.2" class="anchored" data-anchor-id="d-with-pytorch-1"><span class="header-section-number">12.1.2</span> 2D with PyTorch</h3>
+<p>파이토치로 2차원 텐서인 행렬을 만들어봅시다.</p>
+<div id="cell-12" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-13" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> torch.FloatTensor([[<span class="fl">1.</span>, <span class="fl">2.</span>, <span class="fl">3.</span>],</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>                       [<span class="fl">4.</span>, <span class="fl">5.</span>, <span class="fl">6.</span>],</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>                       [<span class="fl">7.</span>, <span class="fl">8.</span>, <span class="fl">9.</span>],</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>                       [<span class="fl">10.</span>, <span class="fl">11.</span>, <span class="fl">12.</span>]</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>                      ])</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(t)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tensor([[ 1.,  2.,  3.],
+        [ 4.,  5.,  6.],
+        [ 7.,  8.,  9.],
+        [10., 11., 12.]])</code></pre>
+</div>
+</div>
+<p>dim()을 사용하면 현재 텐서의 차원을 보여줍니다. size()를 사용하면 크기를 확인할 수 있습니다.</p>
+<div id="cell-15" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(t.dim())  <span class="co"># rank. 즉, 차원</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(t.size()) <span class="co"># shape</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>2
+torch.Size([4, 3])</code></pre>
+</div>
+</div>
+<div id="cell-16" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(t[:, <span class="dv">1</span>]) <span class="co"># 첫번째 차원을 전체 선택한 상황에서 두번째 차원의 첫번째 것만 가져온다.</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(t[:, <span class="dv">1</span>].size()) <span class="co"># ↑ 위의 경우의 크기</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tensor([ 2.,  5.,  8., 11.])
+torch.Size([4])</code></pre>
+</div>
+</div>
+</section>
+<section id="브로드캐스팅broadcasting" class="level3" data-number="12.1.3">
+<h3 data-number="12.1.3" class="anchored" data-anchor-id="브로드캐스팅broadcasting"><span class="header-section-number">12.1.3</span> 브로드캐스팅(Broadcasting)</h3>
+<p>원래 m1의 크기는 (1, 2)이며 m2의 크기는 (1,)입니다. 그런데 파이토치는 m2의 크기를 (1, 2)로 변경하여 연산을 수행합니다. 이번에는 벡터 간 연산에서 브로드캐스팅이 적용되는 경우를 보겠습니다.</p>
+<div id="cell-18" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="op">=</span> torch.FloatTensor([[<span class="dv">3</span>, <span class="dv">3</span>]])</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>m2 <span class="op">=</span> torch.FloatTensor([[<span class="dv">2</span>, <span class="dv">2</span>]])</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(m1 <span class="op">+</span> m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tensor([[5., 5.]])</code></pre>
+</div>
+</div>
+<div id="cell-19" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Vector + scalar</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>m1 <span class="op">=</span> torch.FloatTensor([[<span class="dv">1</span>, <span class="dv">2</span>]])</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>m2 <span class="op">=</span> torch.FloatTensor([<span class="dv">3</span>]) <span class="co"># [3] -&gt; [3, 3]</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(m1 <span class="op">+</span> m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tensor([[4., 5.]])</code></pre>
+</div>
+</div>
+<p>m1의 크기는 (1, 2) m2의 크기는 (2, 1)였습니다. 이 두 벡터는 원래 수학적으로는 덧셈을 수행할 수 없습니다. 그러나 파이토치는 두 벡터의 크기를 (2, 2)로 변경하여 덧셈을 수행합니다.</p>
+<div id="cell-21" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2 x 1 Vector + 1 x 2 Vector</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>m1 <span class="op">=</span> torch.FloatTensor([[<span class="dv">1</span>, <span class="dv">2</span>]])</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>m2 <span class="op">=</span> torch.FloatTensor([[<span class="dv">3</span>], [<span class="dv">4</span>]])</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(m1 <span class="op">+</span> m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tensor([[4., 5.],
+        [5., 6.]])</code></pre>
+</div>
+</div>
+<p>브로드캐스팅 과정에서 실제로 두 텐서가 어떻게 변경되는지 보겠습니다.</p>
+<pre><code>[1, 2]
+==&gt; [[1, 2],
+     [1, 2]]
+[3]
+[4]
+==&gt; [[3, 3],
+     [4, 4]]</code></pre>
+<p>브로드캐스팅은 편리하지만, 자동으로 실행되는 기능이므로 사용자 입장에서 굉장히 주의해서 사용해야 합니다. 예를 들어 A 텐서와 B 텐서가 있을 때, 사용자는 이 두 텐서의 크기가 같다고 착각하고 덧셈 연산을 수행했다고 가정해보겠습니다. 하지만 실제로 이 두 텐서의 크기는 달랐고 브로드캐스팅이 수행되어 덧셈 연산이 수행되었습니다. 만약, 두 텐서의 크기가 다르다고 에러를 발생시킨다면 사용자는 이 연산이 잘못되었음을 바로 알 수 있지만 브로드캐스팅은 자동으로 수행되므로 사용자는 나중에 원하는 결과가 나오지 않았더라도 어디서 문제가 발생했는지 찾기가 굉장히 어려울 수 있습니다.</p>
+</section>
+</section>
+<section id="행렬-곱셈과-곱셈의-차이matrix-multiplication-vs.-multiplication" class="level2" data-number="12.2">
+<h2 data-number="12.2" class="anchored" data-anchor-id="행렬-곱셈과-곱셈의-차이matrix-multiplication-vs.-multiplication"><span class="header-section-number">12.2</span> 행렬 곱셈과 곱셈의 차이(Matrix Multiplication Vs. Multiplication)</h2>
+<p>행렬로 곱셈을 하는 방법은 크게 두 가지가 있습니다. 바로 행렬 곱셈(.matmul)과 원소 별 곱셈(.mul)입니다. 파이토치 텐서의 행렬 곱셈을 보겠습니다. 이는 matmul()을 통해 수행합니다.</p>
+<div id="cell-24" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="op">=</span> torch.FloatTensor([[<span class="dv">1</span>, <span class="dv">2</span>], [<span class="dv">3</span>, <span class="dv">4</span>]])</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>m2 <span class="op">=</span> torch.FloatTensor([[<span class="dv">1</span>], [<span class="dv">2</span>]])</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Shape of Matrix 1: '</span>, m1.shape) <span class="co"># 2 x 2</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Shape of Matrix 2: '</span>, m2.shape) <span class="co"># 2 x 1</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(m1.matmul(m2)) <span class="co"># 2 x 1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Shape of Matrix 1:  torch.Size([2, 2])
+Shape of Matrix 2:  torch.Size([2, 1])
+tensor([[ 5.],
+        [11.]])</code></pre>
+</div>
+</div>
+<p>위의 결과는 2 x 2 행렬과 2 x 1 행렬(벡터)의 행렬 곱셈의 결과를 보여줍니다.</p>
+<p>행렬 곱셈이 아니라 element-wise 곱셈이라는 것이 존재합니다. 이는 동일한 크기의 행렬이 동일한 위치에 있는 원소끼리 곱하는 것을 말합니다. 아래는 서로 다른 크기의 행렬이 브로드캐스팅이 된 후에 element-wise 곱셈이 수행되는 것을 보여줍니다. 이는 * 또는 mul()을 통해 수행합니다.</p>
+<div id="cell-26" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="op">=</span> torch.FloatTensor([[<span class="dv">1</span>, <span class="dv">2</span>], [<span class="dv">3</span>, <span class="dv">4</span>]])</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>m2 <span class="op">=</span> torch.FloatTensor([[<span class="dv">1</span>], [<span class="dv">2</span>]])</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Shape of Matrix 1: '</span>, m1.shape) <span class="co"># 2 x 2</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Shape of Matrix 2: '</span>, m2.shape) <span class="co"># 2 x 1</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(m1 <span class="op">*</span> m2) <span class="co"># 2 x 2</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(m1.mul(m2))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Shape of Matrix 1:  torch.Size([2, 2])
+Shape of Matrix 2:  torch.Size([2, 1])
+tensor([[1., 2.],
+        [6., 8.]])
+tensor([[1., 2.],
+        [6., 8.]])</code></pre>
+</div>
+</div>
+<p>m1 행렬의 크기는 (2, 2)이었습니다. m2 행렬의 크기는 (2, 1)였습니다. 이때 element-wise 곱셈을 수행하면, 두 행렬의 크기는 브로드캐스팅이 된 후에 곱셈이 수행됩니다. 더 정확히는 여기서 m2의 크기가 변환됩니다.</p>
+<p>브로드캐스팅 과정에서 m2 텐서가 어떻게 변경되는지 보겠습니다.</p>
+<pre><code>[1]
+[2]
+==&gt; [[1, 1],
+     [2, 2]]</code></pre>
+</section>
+<section id="평균" class="level2" data-number="12.3">
+<h2 data-number="12.3" class="anchored" data-anchor-id="평균"><span class="header-section-number">12.3</span> 평균</h2>
+<p>평균을 구하는 방법도 제공하고 있습니다. 이는 Numpy에서의 사용법과 매우 유사합니다. 우선 1차원인 벡터를 선언하여 .mean()을 사용하여 원소의 평균을 구합니다.</p>
+<div id="cell-29" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> torch.FloatTensor([<span class="dv">1</span>, <span class="dv">2</span>])</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(t.mean())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tensor(1.5000)</code></pre>
+</div>
+</div>
+<p>1과 2의 평균인 1.5가 나옵니다. 이번에는 2차원인 행렬을 선언하여 .mean()을 사용해봅시다. 우선 2차원 행렬을 선언합니다.</p>
+<div id="cell-31" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> torch.FloatTensor([[<span class="dv">1</span>, <span class="dv">2</span>], [<span class="dv">3</span>, <span class="dv">4</span>]])</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(t)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tensor([[1., 2.],
+        [3., 4.]])</code></pre>
+</div>
+</div>
+<div id="cell-32" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(t.mean())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tensor(2.5000)</code></pre>
+</div>
+</div>
+<p>4개의 원소의 평균인 2.5가 나왔습니다. 이번에는 dim. 즉, 차원(dimension)을 인자로 주는 경우를 보겠습니다.</p>
+<div id="cell-34" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(t.mean(dim<span class="op">=</span><span class="dv">0</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tensor([2., 3.])</code></pre>
+</div>
+</div>
+<p>dim=0이라는 것은 첫번째 차원을 의미합니다. 행렬에서 첫번째 차원은 ’행’을 의미합니다. 그리고 인자로 dim을 준다면 해당 차원을 제거한다는 의미가 됩니다. 다시 말해 행렬에서 ’열’만을 남기겠다는 의미가 됩니다. 기존 행렬의 크기는 (2, 2)였지만 이를 수행하면 열의 차원만 보존되면서 (1, 2)가 됩니다. 이는 (2,)와 같으며 벡터입니다. 열의 차원을 보존하면서 평균을 구하면 아래와 같이 연산합니다.</p>
+<pre><code># 실제 연산 과정
+t.mean(dim=0)은 입력에서 첫번째 차원을 제거한다.
+
+[[1., 2.],
+ [3., 4.]]
+
+1과 3의 평균을 구하고, 2와 4의 평균을 구한다.
+결과 ==&gt; [2., 3.]</code></pre>
+<p>이번에는 인자로 dim=1을 주겠습니다. 이번에는 두번째 차원을 제거합니다. 즉, 열이 제거된 텐서가 되어야 합니다. 열의 차원이 제거되어야 하므로 (2, 2)의 크기에서 (2, 1)의 크기가 됩니다. 이번에는 1과 2의 평균을 구하고 3과 4의 평균을 구하게 됩니다. 그렇다면 결과는 아래와 같습니다.</p>
+<div id="cell-37" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(t.mean(dim<span class="op">=</span><span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tensor([1.5000, 3.5000])</code></pre>
+</div>
+</div>
+</section>
+<section id="덧셈" class="level2" data-number="12.4">
+<h2 data-number="12.4" class="anchored" data-anchor-id="덧셈"><span class="header-section-number">12.4</span> 덧셈</h2>
+<p>덧셈(Sum)은 평균(Mean)과 연산 방법이나 인자가 의미하는 바는 정확히 동일합니다. 다만, 평균이 아니라 덧셈을 할 뿐입니다.</p>
+<div id="cell-39" class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> torch.FloatTensor([[<span class="dv">1</span>, <span class="dv">2</span>], [<span class="dv">3</span>, <span class="dv">4</span>]])</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(t)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tensor([[1., 2.],
+        [3., 4.]])</code></pre>
+</div>
+</div>
+<div id="cell-40" class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(t.<span class="bu">sum</span>()) <span class="co"># 단순히 원소 전체의 덧셈을 수행</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(t.<span class="bu">sum</span>(dim<span class="op">=</span><span class="dv">0</span>)) <span class="co"># 행을 제거</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(t.<span class="bu">sum</span>(dim<span class="op">=</span><span class="dv">1</span>)) <span class="co"># 열을 제거</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(t.<span class="bu">sum</span>(dim<span class="op">=-</span><span class="dv">1</span>)) <span class="co"># 열을 제거</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tensor(10.)
+tensor([4., 6.])
+tensor([3., 7.])
+tensor([3., 7.])</code></pre>
+</div>
+</div>
+</section>
+<section id="최대max와-아그맥스argmax" class="level2" data-number="12.5">
+<h2 data-number="12.5" class="anchored" data-anchor-id="최대max와-아그맥스argmax"><span class="header-section-number">12.5</span> 최대(Max)와 아그맥스(ArgMax)</h2>
+<p>최대(Max)는 원소의 최대값을 리턴하고, 아그맥스(ArgMax)는 최대값을 가진 인덱스를 리턴합니다. (2, 2) 크기의 행렬을 선언하고 Max를 사용해봅시다.</p>
+<div id="cell-42" class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> torch.FloatTensor([[<span class="dv">1</span>, <span class="dv">2</span>], [<span class="dv">3</span>, <span class="dv">4</span>]])</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(t)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tensor([[1., 2.],
+        [3., 4.]])</code></pre>
+</div>
+</div>
+<p>우선 (2, 2) 행렬을 선언하였습니다. 이제 .max()를 사용합니다. 원소 중 최대값인 4를 리턴합니다. 이번에는 인자로 dim=0을 주겠습니다. 첫번째 차원을 제거한다는 의미입니다.</p>
+<div id="cell-44" class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(t.<span class="bu">max</span>()) <span class="co"># Returns one value: max</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tensor(4.)</code></pre>
+</div>
+</div>
+<p>행의 차원을 제거한다는 의미이므로 (1, 2) 텐서를 만듭니다. 결과는 [3, 4]입니다. 그런데 [1, 1]이라는 값도 함께 리턴되었습니다. max에 dim 인자를 주면 argmax도 함께 리턴하는 특징 때문입니다. 첫번째 열에서 3의 인덱스는 1이었습니다. 두번째 열에서 4의 인덱스는 1이었습니다. 그러므로 [1, 1]이 리턴됩니다. 어떤 의미인지는 아래 설명해봤습니다.</p>
+<pre><code># [1, 1]가 무슨 의미인지 봅시다. 기존 행렬을 다시 상기해봅시다.
+[[1, 2],
+ [3, 4]]
+첫번째 열에서 0번 인덱스는 1, 1번 인덱스는 3입니다.
+두번째 열에서 0번 인덱스는 2, 1번 인덱스는 4입니다.
+다시 말해 3과 4의 인덱스는 [1, 1]입니다.</code></pre>
+<p>만약 두 개를 함께 리턴받는 것이 아니라 max 또는 argmax만 리턴받고 싶다면 다음과 같이 리턴값에도 인덱스를 부여하면 됩니다. 0번 인덱스를 사용하면 max 값만 받아올 수 있고, 1번 인덱스를 사용하면 argmax 값만 받아올 수 있습니다.</p>
+<div id="cell-47" class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Max: '</span>, t.<span class="bu">max</span>(dim<span class="op">=</span><span class="dv">0</span>)[<span class="dv">0</span>])</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Argmax: '</span>, t.<span class="bu">max</span>(dim<span class="op">=</span><span class="dv">0</span>)[<span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Max:  tensor([3., 4.])
+Argmax:  tensor([1, 1])</code></pre>
+</div>
+</div>
+<p>이번에는 dim=1로 인자를 주었을 때와 dim=-1로 인자를 주었을 때를 보겠습니다.</p>
+<div id="cell-49" class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(t.<span class="bu">max</span>(dim<span class="op">=</span><span class="dv">1</span>))</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(t.<span class="bu">max</span>(dim<span class="op">=-</span><span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>torch.return_types.max(
+values=tensor([2., 4.]),
+indices=tensor([1, 1]))
+torch.return_types.max(
+values=tensor([2., 4.]),
+indices=tensor([1, 1]))</code></pre>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./DL00_Python.html" class="pagination-link  aria-label=" &lt;span="" 클래스&lt;="" span&gt;"="">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">함수와 클래스</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link" aria-label="References">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
