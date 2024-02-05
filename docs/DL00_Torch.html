@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>머신러닝/딥러닝 입문 - 12&nbsp; 벡터, 행렬 그리고 텐서(Vector, Matrix and Tensor)</title>
+<title>머신러닝/딥러닝 입문 - 14&nbsp; 벡터, 행렬 그리고 텐서(Vector, Matrix and Tensor)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -144,7 +144,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./DL00_Torch.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">벡터, 행렬 그리고 텐서(Vector, Matrix and Tensor)</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./DL00_Torch.html"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">벡터, 행렬 그리고 텐서(Vector, Matrix and Tensor)</span></a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -231,14 +231,26 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./DL10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">streamlit</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./DL11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Gradio</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./DL00_Python.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">함수와 클래스</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">함수와 클래스</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./DL00_Torch.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">벡터, 행렬 그리고 텐서(Vector, Matrix and Tensor)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">벡터, 행렬 그리고 텐서(Vector, Matrix and Tensor)</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -257,16 +269,16 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#파이토치-텐서-선언하기pytorch-tensor-allocation" id="toc-파이토치-텐서-선언하기pytorch-tensor-allocation" class="nav-link active" data-scroll-target="#파이토치-텐서-선언하기pytorch-tensor-allocation"><span class="header-section-number">12.1</span> 파이토치 텐서 선언하기(PyTorch Tensor Allocation)</a>
+  <li><a href="#파이토치-텐서-선언하기pytorch-tensor-allocation" id="toc-파이토치-텐서-선언하기pytorch-tensor-allocation" class="nav-link active" data-scroll-target="#파이토치-텐서-선언하기pytorch-tensor-allocation"><span class="header-section-number">14.1</span> 파이토치 텐서 선언하기(PyTorch Tensor Allocation)</a>
   <ul class="collapse">
-  <li><a href="#d-with-pytorch" id="toc-d-with-pytorch" class="nav-link" data-scroll-target="#d-with-pytorch"><span class="header-section-number">12.1.1</span> 1D with PyTorch</a></li>
-  <li><a href="#d-with-pytorch-1" id="toc-d-with-pytorch-1" class="nav-link" data-scroll-target="#d-with-pytorch-1"><span class="header-section-number">12.1.2</span> 2D with PyTorch</a></li>
-  <li><a href="#브로드캐스팅broadcasting" id="toc-브로드캐스팅broadcasting" class="nav-link" data-scroll-target="#브로드캐스팅broadcasting"><span class="header-section-number">12.1.3</span> 브로드캐스팅(Broadcasting)</a></li>
+  <li><a href="#d-with-pytorch" id="toc-d-with-pytorch" class="nav-link" data-scroll-target="#d-with-pytorch"><span class="header-section-number">14.1.1</span> 1D with PyTorch</a></li>
+  <li><a href="#d-with-pytorch-1" id="toc-d-with-pytorch-1" class="nav-link" data-scroll-target="#d-with-pytorch-1"><span class="header-section-number">14.1.2</span> 2D with PyTorch</a></li>
+  <li><a href="#브로드캐스팅broadcasting" id="toc-브로드캐스팅broadcasting" class="nav-link" data-scroll-target="#브로드캐스팅broadcasting"><span class="header-section-number">14.1.3</span> 브로드캐스팅(Broadcasting)</a></li>
   </ul></li>
-  <li><a href="#행렬-곱셈과-곱셈의-차이matrix-multiplication-vs.-multiplication" id="toc-행렬-곱셈과-곱셈의-차이matrix-multiplication-vs.-multiplication" class="nav-link" data-scroll-target="#행렬-곱셈과-곱셈의-차이matrix-multiplication-vs.-multiplication"><span class="header-section-number">12.2</span> 행렬 곱셈과 곱셈의 차이(Matrix Multiplication Vs. Multiplication)</a></li>
-  <li><a href="#평균" id="toc-평균" class="nav-link" data-scroll-target="#평균"><span class="header-section-number">12.3</span> 평균</a></li>
-  <li><a href="#덧셈" id="toc-덧셈" class="nav-link" data-scroll-target="#덧셈"><span class="header-section-number">12.4</span> 덧셈</a></li>
-  <li><a href="#최대max와-아그맥스argmax" id="toc-최대max와-아그맥스argmax" class="nav-link" data-scroll-target="#최대max와-아그맥스argmax"><span class="header-section-number">12.5</span> 최대(Max)와 아그맥스(ArgMax)</a></li>
+  <li><a href="#행렬-곱셈과-곱셈의-차이matrix-multiplication-vs.-multiplication" id="toc-행렬-곱셈과-곱셈의-차이matrix-multiplication-vs.-multiplication" class="nav-link" data-scroll-target="#행렬-곱셈과-곱셈의-차이matrix-multiplication-vs.-multiplication"><span class="header-section-number">14.2</span> 행렬 곱셈과 곱셈의 차이(Matrix Multiplication Vs. Multiplication)</a></li>
+  <li><a href="#평균" id="toc-평균" class="nav-link" data-scroll-target="#평균"><span class="header-section-number">14.3</span> 평균</a></li>
+  <li><a href="#덧셈" id="toc-덧셈" class="nav-link" data-scroll-target="#덧셈"><span class="header-section-number">14.4</span> 덧셈</a></li>
+  <li><a href="#최대max와-아그맥스argmax" id="toc-최대max와-아그맥스argmax" class="nav-link" data-scroll-target="#최대max와-아그맥스argmax"><span class="header-section-number">14.5</span> 최대(Max)와 아그맥스(ArgMax)</a></li>
   </ul>
 </nav>
     </div>
@@ -275,7 +287,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">벡터, 행렬 그리고 텐서(Vector, Matrix and Tensor)</span></h1>
+<h1 class="title"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">벡터, 행렬 그리고 텐서(Vector, Matrix and Tensor)</span></h1>
 </div>
 
 
@@ -327,12 +339,12 @@ window.Quarto = {
 두번째 배치 #2
 [[[0.1, 0.2, 0.9], [0.3, 0.5, 0.1], [0.5, 0.6, 0.7]],
  [[0.1, 0.2, 0.9], [0.3, 0.5, 0.2], [0.5, 0.6, 0.7]]]</code></pre>
-<section id="파이토치-텐서-선언하기pytorch-tensor-allocation" class="level2" data-number="12.1">
-<h2 data-number="12.1" class="anchored" data-anchor-id="파이토치-텐서-선언하기pytorch-tensor-allocation"><span class="header-section-number">12.1</span> 파이토치 텐서 선언하기(PyTorch Tensor Allocation)</h2>
+<section id="파이토치-텐서-선언하기pytorch-tensor-allocation" class="level2" data-number="14.1">
+<h2 data-number="14.1" class="anchored" data-anchor-id="파이토치-텐서-선언하기pytorch-tensor-allocation"><span class="header-section-number">14.1</span> 파이토치 텐서 선언하기(PyTorch Tensor Allocation)</h2>
 <p>파이토치는 Numpy와 매우 유사합니다. 하지만 더 낫습니다(better). 우선 torch를 임포트합니다.</p>
 <pre><code>import torch</code></pre>
-<section id="d-with-pytorch" class="level3" data-number="12.1.1">
-<h3 data-number="12.1.1" class="anchored" data-anchor-id="d-with-pytorch"><span class="header-section-number">12.1.1</span> 1D with PyTorch</h3>
+<section id="d-with-pytorch" class="level3" data-number="14.1.1">
+<h3 data-number="14.1.1" class="anchored" data-anchor-id="d-with-pytorch"><span class="header-section-number">14.1.1</span> 1D with PyTorch</h3>
 <pre><code>t = torch.FloatTensor([0., 1., 2., 3., 4., 5., 6.])
 print(t)</code></pre>
 <p>dim()을 사용하면 현재 텐서의 차원을 보여줍니다. shape나 size()를 사용하면 크기를 확인할 수 있습니다.</p>
@@ -352,8 +364,8 @@ tensor(0.) tensor(1.) tensor(6.)
 tensor([2., 3., 4.]) tensor([4., 5.])
 tensor([0., 1.]) tensor([3., 4., 5., 6.])</code></pre>
 </section>
-<section id="d-with-pytorch-1" class="level3" data-number="12.1.2">
-<h3 data-number="12.1.2" class="anchored" data-anchor-id="d-with-pytorch-1"><span class="header-section-number">12.1.2</span> 2D with PyTorch</h3>
+<section id="d-with-pytorch-1" class="level3" data-number="14.1.2">
+<h3 data-number="14.1.2" class="anchored" data-anchor-id="d-with-pytorch-1"><span class="header-section-number">14.1.2</span> 2D with PyTorch</h3>
 <p>파이토치로 2차원 텐서인 행렬을 만들어봅시다.</p>
 <div id="cell-12" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -390,8 +402,8 @@ torch.Size([4])</code></pre>
 </div>
 </div>
 </section>
-<section id="브로드캐스팅broadcasting" class="level3" data-number="12.1.3">
-<h3 data-number="12.1.3" class="anchored" data-anchor-id="브로드캐스팅broadcasting"><span class="header-section-number">12.1.3</span> 브로드캐스팅(Broadcasting)</h3>
+<section id="브로드캐스팅broadcasting" class="level3" data-number="14.1.3">
+<h3 data-number="14.1.3" class="anchored" data-anchor-id="브로드캐스팅broadcasting"><span class="header-section-number">14.1.3</span> 브로드캐스팅(Broadcasting)</h3>
 <p>원래 m1의 크기는 (1, 2)이며 m2의 크기는 (1,)입니다. 그런데 파이토치는 m2의 크기를 (1, 2)로 변경하여 연산을 수행합니다. 이번에는 벡터 간 연산에서 브로드캐스팅이 적용되는 경우를 보겠습니다.</p>
 <div id="cell-18" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="op">=</span> torch.FloatTensor([[<span class="dv">3</span>, <span class="dv">3</span>]])</span>
@@ -432,8 +444,8 @@ torch.Size([4])</code></pre>
 <p>브로드캐스팅은 편리하지만, 자동으로 실행되는 기능이므로 사용자 입장에서 굉장히 주의해서 사용해야 합니다. 예를 들어 A 텐서와 B 텐서가 있을 때, 사용자는 이 두 텐서의 크기가 같다고 착각하고 덧셈 연산을 수행했다고 가정해보겠습니다. 하지만 실제로 이 두 텐서의 크기는 달랐고 브로드캐스팅이 수행되어 덧셈 연산이 수행되었습니다. 만약, 두 텐서의 크기가 다르다고 에러를 발생시킨다면 사용자는 이 연산이 잘못되었음을 바로 알 수 있지만 브로드캐스팅은 자동으로 수행되므로 사용자는 나중에 원하는 결과가 나오지 않았더라도 어디서 문제가 발생했는지 찾기가 굉장히 어려울 수 있습니다.</p>
 </section>
 </section>
-<section id="행렬-곱셈과-곱셈의-차이matrix-multiplication-vs.-multiplication" class="level2" data-number="12.2">
-<h2 data-number="12.2" class="anchored" data-anchor-id="행렬-곱셈과-곱셈의-차이matrix-multiplication-vs.-multiplication"><span class="header-section-number">12.2</span> 행렬 곱셈과 곱셈의 차이(Matrix Multiplication Vs. Multiplication)</h2>
+<section id="행렬-곱셈과-곱셈의-차이matrix-multiplication-vs.-multiplication" class="level2" data-number="14.2">
+<h2 data-number="14.2" class="anchored" data-anchor-id="행렬-곱셈과-곱셈의-차이matrix-multiplication-vs.-multiplication"><span class="header-section-number">14.2</span> 행렬 곱셈과 곱셈의 차이(Matrix Multiplication Vs. Multiplication)</h2>
 <p>행렬로 곱셈을 하는 방법은 크게 두 가지가 있습니다. 바로 행렬 곱셈(.matmul)과 원소 별 곱셈(.mul)입니다. 파이토치 텐서의 행렬 곱셈을 보겠습니다. 이는 matmul()을 통해 수행합니다.</p>
 <div id="cell-24" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="op">=</span> torch.FloatTensor([[<span class="dv">1</span>, <span class="dv">2</span>], [<span class="dv">3</span>, <span class="dv">4</span>]])</span>
@@ -473,8 +485,8 @@ tensor([[1., 2.],
 ==&gt; [[1, 1],
      [2, 2]]</code></pre>
 </section>
-<section id="평균" class="level2" data-number="12.3">
-<h2 data-number="12.3" class="anchored" data-anchor-id="평균"><span class="header-section-number">12.3</span> 평균</h2>
+<section id="평균" class="level2" data-number="14.3">
+<h2 data-number="14.3" class="anchored" data-anchor-id="평균"><span class="header-section-number">14.3</span> 평균</h2>
 <p>평균을 구하는 방법도 제공하고 있습니다. 이는 Numpy에서의 사용법과 매우 유사합니다. 우선 1차원인 벡터를 선언하여 .mean()을 사용하여 원소의 평균을 구합니다.</p>
 <div id="cell-29" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> torch.FloatTensor([<span class="dv">1</span>, <span class="dv">2</span>])</span>
@@ -522,8 +534,8 @@ t.mean(dim=0)은 입력에서 첫번째 차원을 제거한다.
 </div>
 </div>
 </section>
-<section id="덧셈" class="level2" data-number="12.4">
-<h2 data-number="12.4" class="anchored" data-anchor-id="덧셈"><span class="header-section-number">12.4</span> 덧셈</h2>
+<section id="덧셈" class="level2" data-number="14.4">
+<h2 data-number="14.4" class="anchored" data-anchor-id="덧셈"><span class="header-section-number">14.4</span> 덧셈</h2>
 <p>덧셈(Sum)은 평균(Mean)과 연산 방법이나 인자가 의미하는 바는 정확히 동일합니다. 다만, 평균이 아니라 덧셈을 할 뿐입니다.</p>
 <div id="cell-39" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> torch.FloatTensor([[<span class="dv">1</span>, <span class="dv">2</span>], [<span class="dv">3</span>, <span class="dv">4</span>]])</span>
@@ -546,8 +558,8 @@ tensor([3., 7.])</code></pre>
 </div>
 </div>
 </section>
-<section id="최대max와-아그맥스argmax" class="level2" data-number="12.5">
-<h2 data-number="12.5" class="anchored" data-anchor-id="최대max와-아그맥스argmax"><span class="header-section-number">12.5</span> 최대(Max)와 아그맥스(ArgMax)</h2>
+<section id="최대max와-아그맥스argmax" class="level2" data-number="14.5">
+<h2 data-number="14.5" class="anchored" data-anchor-id="최대max와-아그맥스argmax"><span class="header-section-number">14.5</span> 최대(Max)와 아그맥스(ArgMax)</h2>
 <p>최대(Max)는 원소의 최대값을 리턴하고, 아그맥스(ArgMax)는 최대값을 가진 인덱스를 리턴합니다. (2, 2) 크기의 행렬을 선언하고 Max를 사용해봅시다.</p>
 <div id="cell-42" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> torch.FloatTensor([[<span class="dv">1</span>, <span class="dv">2</span>], [<span class="dv">3</span>, <span class="dv">4</span>]])</span>
@@ -988,7 +1000,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./DL00_Python.html" class="pagination-link  aria-label=" &lt;span="" 클래스&lt;="" span&gt;"="">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">함수와 클래스</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">함수와 클래스</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

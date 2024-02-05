@@ -17,3 +17,6 @@ streamlit
 streamlit-drawable-canvas
 opencv-python
 torchinfo
+gradio==3.44.4
+fasttext-wheel
+transformers

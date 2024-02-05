@@ -17,6 +17,8 @@ book:
     - DL07.ipynb
     - DL08.ipynb
     - DL09.ipynb            
+    - DL10.ipynb
+    - DL11.ipynb
     - DL00_Python.ipynb
     - DL00_Torch.ipynb
     - references.qmd
